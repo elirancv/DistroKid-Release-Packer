@@ -394,11 +394,12 @@ make test
 
 **Testing:**
 - Framework: pytest
-- Coverage: Unknown (run `make test-cov` to generate report)
+- Coverage: Tracked via Codecov in CI (`.github/workflows/test.yml`)
 - Test organization:
   - `tests/unit/` - Unit tests for validation functions
   - `tests/integration/` - Integration tests for full workflow
   - `tests/fixtures/` - Test configuration files and sample data
+- CI/CD: Automated testing on push/PR across multiple OS (Ubuntu, Windows, macOS) and Python versions (3.8, 3.9, 3.10, 3.11)
 
 **Code quality:**
 - Error handling: Structured validation results, exception-based operations
@@ -406,9 +407,7 @@ make test
 - File operations: `pathlib.Path` (Python), `path.join()` (JavaScript)
 
 **Known gaps:**
-- No automated linting/formatting configuration detected
-- Coverage percentage not tracked in CI (if CI exists)
-- Windows-specific code may not be fully tested
+- No automated linting/formatting configuration detected (no `.flake8`, `.pylintrc`, `pyproject.toml`, or `.ruff.toml` found)
 
 ---
 
@@ -468,7 +467,7 @@ make test
 
 **Not applicable:** This is a local development tool intended for use on developer machines, not a deployed service.
 
-**Inferred:** No CI/CD configuration, Docker files, or deployment infrastructure detected. Tool is executed locally via CLI.
+**CI/CD:** Automated testing configured via GitHub Actions (`.github/workflows/test.yml`) - runs on push/PR across multiple OS and Python versions. No deployment infrastructure (Docker, containerization) as tool is executed locally via CLI.
 
 ---
 
