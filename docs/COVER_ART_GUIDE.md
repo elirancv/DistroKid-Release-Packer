@@ -29,7 +29,7 @@ The tool automatically finds and renames cover art files to match the release na
 
 3. Run the tool:
    ```bash
-   python pack.py config.json
+   python pack.py release.json
    ```
 
 4. The tool will automatically:
@@ -58,5 +58,5 @@ The tool automatically finds and renames cover art files to match the release na
 - ✅ **Format detection** - Tool preserves original format (JPG/PNG)
 - ⚠️ **Cover art is optional** - Tool works without it (just shows a warning)
 - ⚠️ **Multiple images** - If multiple images found, first one is used
-- 💡 **Skip validation** - Set `"validate_cover": false` in config.json to skip
+- 💡 **Skip validation** - Set `"validate_cover": false` in release.json to skip
 

@@ -29,7 +29,7 @@ def rename_audio_files(artist, title, source_dir, dest_dir, overwrite=False):
         if dest_file.exists() and not overwrite:
             raise FileExistsError(
                 f"File already exists: {dest_file}\n"
-                f"  To overwrite, set 'overwrite_existing: true' in config.json"
+                f"  To overwrite, set 'overwrite_existing: true' in release.json"
             )
 
         shutil.copy2(file, dest_file)

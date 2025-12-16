@@ -27,8 +27,8 @@ NPM    := npm
 # ------------------------------------------------------------------------------
 PROJECT_NAME := DistroKid Release Packer
 VERSION      := 2.3.0
-CONFIG       := config.json
-CONFIG_EX    := config.example.json
+CONFIG       := release.json
+CONFIG_EX    := release.example.json
 PY_FILES     := scripts/*.py
 RELEASES_DIR := Releases
 
@@ -83,7 +83,7 @@ ifeq ($(IS_WINDOWS),1)
 	@echo   run                  Run Python packer
 	@echo   run-js               Run JavaScript packer
 	@echo   quick                Setup and run
-	@echo   validate             Validate config.json
+	@echo   validate             Validate release.json
 	@echo   example              Show example configuration
 	@echo   check                Verify dependencies
 	@echo   test                 Run all tests
@@ -167,7 +167,7 @@ quick: setup run ## Setup and run
 # ------------------------------------------------------------------------------
 # Validation
 # ------------------------------------------------------------------------------
-validate: ensure-config ## Validate config.json
+validate: ensure-config ## Validate release.json
 	$(call log,Validating $(CONFIG))
 	@$(PYTHON) -c "import json; json.load(open('$(CONFIG)'))"
 	$(call ok,Valid JSON)

@@ -31,7 +31,7 @@ function renameAudioFiles(artist, title, sourceDir, destDir, overwrite = false) 
     if (fs.existsSync(destPath) && !overwrite) {
       throw new Error(
         `File already exists: ${destPath}\n` +
-        `  To overwrite, set 'overwrite_existing: true' in config.json`
+        `  To overwrite, set 'overwrite_existing: true' in release.json`
       );
     }
     

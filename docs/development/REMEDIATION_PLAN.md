@@ -33,7 +33,7 @@
    ```
 
 4. **Guardrails:**
-   - Never modify `config.example.json` without updating documentation
+   - Never modify `release.example.json` without updating documentation
    - All fixes must maintain backward compatibility with existing valid configs
    - Each phase should be independently committable
    - Run manual smoke test after each phase
@@ -142,9 +142,9 @@ Before starting, verify these scenarios work manually:
    except ValueError as e:
        print(f"\n✗ Configuration Error: {e}")
        print("\nTroubleshooting:")
-       print("  - Check that config.json has 'artist' and 'title' fields")
+       print("  - Check that release.json has 'artist' and 'title' fields")
        print("  - Verify fields are not empty")
-       print("  - See config.example.json for reference")
+       print("  - See release.example.json for reference")
        sys.exit(1)
    except Exception as e:
        # ... existing handling
@@ -203,7 +203,7 @@ python pack.py tests/fixtures/config_valid.json
 python -m py_compile scripts/orchestrator.py
 # Should compile without errors
 
-python scripts/orchestrator.py config.example.json
+python scripts/orchestrator.py release.example.json
 # Should run normally (if config is valid)
 ```
 
@@ -263,7 +263,7 @@ python scripts/orchestrator.py config.example.json
        print("\nTroubleshooting:")
        print("  - Validate JSON syntax (use jsonlint.com or similar)")
        print("  - Check that all required fields are present")
-       print("  - See config.example.json for reference")
+       print("  - See release.example.json for reference")
        sys.exit(1)
    ```
 
@@ -398,7 +398,7 @@ pip install mutagen  # Restore
        if dest_file.exists():
            raise FileExistsError(
                f"File already exists: {dest_file}\n"
-               f"  To overwrite, set 'overwrite_existing: true' in config.json"
+               f"  To overwrite, set 'overwrite_existing: true' in release.json"
            )
        
        shutil.copy2(file, dest_file)
@@ -436,7 +436,7 @@ pip install mutagen  # Restore
 
    Add overwrite parameter and check before copying.
 
-5. **Update `config.example.json`:**
+5. **Update `release.example.json`:**
 
    Add comment:
    ```json
@@ -968,10 +968,10 @@ python pack.py tests/fixtures/config_debug.json
 **Verification:**
 ```bash
 # Start workflow in background
-python pack.py config.json &
+python pack.py release.json &
 
 # Try to start another
-python pack.py config.json
+python pack.py release.json
 # Expected: Error about lock file
 
 # Wait for first to complete, try again

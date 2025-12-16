@@ -44,21 +44,21 @@ def show_help():
 [bold cyan]DistroKid Release Packer - CLI Tool[/bold cyan]
 
 [bold]USAGE:[/bold]
-  [green]python pack.py <config.json>[/green]           Run complete workflow
+  [green]python pack.py <release.json>[/green]           Run complete workflow
   [green]python pack.py --help[/green]                  Show this help
   [green]python pack.py --example[/green]                Show example config
 
 [bold]COMMANDS:[/bold]
-  [cyan]pack <config.json>[/cyan]                     Process release with config file
+  [cyan]pack <release.json>[/cyan]                     Process release with config file
   
 [bold]EXAMPLES:[/bold]
-  [dim]python pack.py config.json[/dim]
+  [dim]python pack.py release.json[/dim]
   [dim]python pack.py my-release.json[/dim]
 
 [bold]QUICK START:[/bold]
-  1. Copy config.example.json to config.json
-  2. Edit config.json with your track details
-  3. Run: [green]python pack.py config.json[/green]
+  1. Copy release.example.json to release.json
+  2. Edit release.json with your track details
+  3. Run: [green]python pack.py release.json[/green]
 
 [bold]For more info, see:[/bold]
   - docs/QUICK_START.md
@@ -94,11 +94,11 @@ def show_example_config():
     }
     
     console.print()
-    console.print("[bold]Example config.json:[/bold]")
+    console.print("[bold]Example release.json:[/bold]")
     json_obj = JSON.from_data(example)
     console.print(json_obj)
     console.print()
-    console.print("[dim]Save this as 'config.json' and edit with your details.[/dim]")
+    console.print("[dim]Save this as 'release.json' and edit with your details.[/dim]")
 
 
 def main():
@@ -124,9 +124,9 @@ def main():
         console.print(f"[bold red][ERROR] Config file not found:[/bold red] {config_path}")
         console.print()
         console.print("[bold]Create a config file first:[/bold]")
-        console.print("  [cyan]1.[/cyan] Copy config.example.json to config.json")
-        console.print("  [cyan]2.[/cyan] Edit config.json with your track details")
-        console.print("  [cyan]3.[/cyan] Run: [green]python pack.py config.json[/green]")
+        console.print("  [cyan]1.[/cyan] Copy release.example.json to release.json")
+        console.print("  [cyan]2.[/cyan] Edit release.json with your track details")
+        console.print("  [cyan]3.[/cyan] Run: [green]python pack.py release.json[/green]")
         sys.exit(1)
     
     try:
@@ -160,7 +160,7 @@ def main():
         console.print(f"[bold red]✗ Error:[/bold red] {e}")
         console.print()
         console.print("[bold]Troubleshooting:[/bold]")
-        console.print("  [cyan]-[/cyan] Check that config.json is valid JSON")
+        console.print("  [cyan]-[/cyan] Check that release.json is valid JSON")
         console.print("  [cyan]-[/cyan] Verify all file paths exist")
         console.print("  [cyan]-[/cyan] See docs/QUICK_START.md for help")
         sys.exit(1)

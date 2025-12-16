@@ -47,7 +47,7 @@ def organize_stems(artist, title, source_dir, stems_dir, overwrite=False):
             if dest_file.exists() and not overwrite:
                 raise FileExistsError(
                     f"File already exists: {dest_file}\n"
-                    f"  To overwrite, set 'overwrite_existing: true' in config.json"
+                    f"  To overwrite, set 'overwrite_existing: true' in release.json"
                 )
 
             # Copy file

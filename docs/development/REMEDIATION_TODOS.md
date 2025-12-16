@@ -37,7 +37,7 @@
 
 ### Guardrails
 
-- [ ] Never modify `config.example.json` without updating documentation
+- [ ] Never modify `release.example.json` without updating documentation
 - [ ] All fixes must maintain backward compatibility with existing valid configs
 - [ ] Each phase should be independently committable
 - [ ] Run manual smoke test after each phase
@@ -115,7 +115,7 @@
 
 ### Fix 1.5: Prevent Accidental File Overwrites
 
-**Files:** `scripts/rename_audio_files.py`, `scripts/organize_stems.py`, `scripts/orchestrator.py`, `config.example.json`
+**Files:** `scripts/rename_audio_files.py`, `scripts/organize_stems.py`, `scripts/orchestrator.py`, `release.example.json`
 
 - [ ] Add file existence check in `rename_audio_files()` before copying (around line 22)
 - [ ] Add `overwrite` parameter to `rename_audio_files()` function signature
@@ -124,7 +124,7 @@
 - [ ] Add file existence check in `organize_stems()` before copying
 - [ ] Add `overwrite` parameter to `organize_stems()` function signature
 - [ ] Update orchestrator call to `organize_stems()` to pass `overwrite_existing` flag
-- [ ] Add `overwrite_existing` field to `config.example.json` with comment
+- [ ] Add `overwrite_existing` field to `release.example.json` with comment
 - [ ] Create test: Existing file without overwrite flag → FileExistsError
 - [ ] Create test: Existing file with overwrite flag → file replaced with warning
 

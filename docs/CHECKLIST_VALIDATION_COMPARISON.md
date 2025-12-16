@@ -73,7 +73,7 @@ Comparison between the DistroKid Release Packer Checklist requirements and what 
 ### Metadata
 - ❌ **Release type**: Single/EP/Album
   - **Checklist**: Requires release type
-  - **Tool**: Not in config.json schema
+  - **Tool**: Not in release.json schema
   - **Manual**: Set during DistroKid upload
 
 - ❌ **Release date**: ≥3 weeks ahead
@@ -119,7 +119,7 @@ Comparison between the DistroKid Release Packer Checklist requirements and what 
 1. **Add bit depth check** (if possible with available libraries)
 2. **Add channel count check** (stereo validation)
 3. **Add color mode check** for cover art (PIL can check this)
-4. **Add release date validation** in config.json
+4. **Add release date validation** in release.json
 
 ### Current Workflow
 

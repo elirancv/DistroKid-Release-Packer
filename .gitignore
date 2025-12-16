@@ -210,8 +210,8 @@ exports/
 !example-cover.*
 
 # Configuration (keep examples, ignore personal)
-config.json
-user_settings.json
+release.json
+artist-defaults.json
 *.local.json
 secrets.json
 .env.local

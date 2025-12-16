@@ -5,11 +5,11 @@
 - ✓ Pillow (for cover art validation)
 
 ## ✅ Step 2: Config File Created
-- ✓ `config.json` created from `config.example.json`
+- ✓ `release.json` created from `release.example.json`
 
 ## 📝 Step 3: Edit Your Config
 
-Open `config.json` and update these **required** fields:
+Open `release.json` and update these **required** fields:
 
 ```json
 {
@@ -39,7 +39,7 @@ exports/
 ## 🚀 Step 5: Run the Tool
 
 ```bash
-python pack.py config.json
+python pack.py release.json
 ```
 
 ## 📋 What Gets Processed
@@ -68,14 +68,14 @@ Releases/YourTrack/
 
 **"File not found" error:**
 - Make sure your audio file is in `exports/` directory
-- Check `source_audio_dir` path in config.json
+- Check `source_audio_dir` path in release.json
 
 **"Cover art not found" warning:**
 - This is OK if you don't have cover art yet
 - Place cover art in `Releases/YourTrack/Cover/` manually if needed
 
 **"Missing required field" error:**
-- Make sure `artist` and `title` are filled in config.json
+- Make sure `artist` and `title` are filled in release.json
 
 ## 🎯 Next Steps After Running
 

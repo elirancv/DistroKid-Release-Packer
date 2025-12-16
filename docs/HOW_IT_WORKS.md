@@ -17,19 +17,19 @@ This is the **orchestrator** - it runs the complete workflow automatically.
 You run it from your terminal like this:
 
 ```bash
-python scripts/orchestrator.py config.json
+python scripts/orchestrator.py release.json
 ```
 
 ### 2. **Workflow Process**
 
 ```
 ┌─────────────────────────────────────────────────┐
-│  You: Create config.json with track details     │
+│  You: Create release.json with track details     │
 └─────────────────┬───────────────────────────────┘
                   │
                   ▼
 ┌─────────────────────────────────────────────────┐
-│  You: Run orchestrator.py config.json          │
+│  You: Run orchestrator.py release.json          │
 └─────────────────┬───────────────────────────────┘
                   │
                   ▼
@@ -63,14 +63,14 @@ python scripts/orchestrator.py config.json
 
 ### 3. **Input: Configuration File**
 
-You create a `config.json` file that tells the tool:
+You create a `release.json` file that tells the tool:
 - Artist name
 - Track title
 - Suno URL (to extract version info)
 - Where your source files are
 - What metadata to use
 
-**Example config.json:**
+**Example release.json:**
 ```json
 {
   "artist": "YourArtistName",
@@ -101,12 +101,12 @@ Releases/DeepDive/
 ### Basic Usage (One Command)
 
 ```bash
-# 1. Create config.json (copy from example)
-cp config.example.json config.json
-# Edit config.json with your details
+# 1. Create release.json (copy from example)
+cp release.example.json release.json
+# Edit release.json with your details
 
 # 2. Run the tool
-python scripts/orchestrator.py config.json
+python scripts/orchestrator.py release.json
 ```
 
 ### What Happens When You Run It
@@ -169,7 +169,7 @@ But the orchestrator is easier - it does everything in one command.
 
 ## Think of It Like...
 
-- **Like a recipe** - You provide ingredients (config.json), it follows steps automatically
+- **Like a recipe** - You provide ingredients (release.json), it follows steps automatically
 - **Like a factory** - Input raw files → Output organized, tagged, validated files
 - **Like a checklist** - But automated, so you don't have to do each step manually
 
@@ -182,13 +182,13 @@ But the orchestrator is easier - it does everything in one command.
 
 2. **Configure:**
    ```bash
-   cp config.example.json config.json
-   # Edit config.json
+   cp release.example.json release.json
+   # Edit release.json
    ```
 
 3. **Run:**
    ```bash
-   python scripts/orchestrator.py config.json
+   python scripts/orchestrator.py release.json
    ```
 
 That's it! Your files are ready for DistroKid upload.

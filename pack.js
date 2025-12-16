@@ -15,21 +15,21 @@ function showHelp() {
 DistroKid Release Packer - CLI Tool
 
 USAGE:
-  node pack.js <config.json>           Run complete workflow
+  node pack.js <release.json>           Run complete workflow
   node pack.js --help                   Show this help
   node pack.js --example                Show example config
 
 COMMANDS:
-  pack <config.json>                    Process release with config file
+  pack <release.json>                    Process release with config file
   
 EXAMPLES:
-  node pack.js config.json
+  node pack.js release.json
   node pack.js my-release.json
 
 QUICK START:
-  1. Copy config.example.json to config.json
-  2. Edit config.json with your track details
-  3. Run: node pack.js config.json
+  1. Copy release.example.json to release.json
+  2. Edit release.json with your track details
+  3. Run: node pack.js release.json
 
 For more info, see:
   - docs/QUICK_START.md
@@ -61,9 +61,9 @@ function showExampleConfig() {
     strict_mode: false
   };
   
-  console.log('\nExample config.json:');
+  console.log('\nExample release.json:');
   console.log(JSON.stringify(example, null, 2));
-  console.log('\nSave this as \'config.json\' and edit with your details.');
+  console.log('\nSave this as \'release.json\' and edit with your details.');
 }
 
 function main() {
@@ -90,9 +90,9 @@ function main() {
   if (!fs.existsSync(configPath)) {
     console.error(`✗ Config file not found: ${configPath}`);
     console.log('\nCreate a config file first:');
-    console.log('  1. Copy config.example.json to config.json');
-    console.log('  2. Edit config.json with your track details');
-    console.log('  3. Run: node pack.js config.json');
+    console.log('  1. Copy release.example.json to release.json');
+    console.log('  2. Edit release.json with your track details');
+    console.log('  3. Run: node pack.js release.json');
     process.exit(1);
   }
   
@@ -113,7 +113,7 @@ function main() {
       .catch(e => {
         console.error(`\n✗ Error: ${e.message}`);
         console.log('\nTroubleshooting:');
-        console.log('  - Check that config.json is valid JSON');
+        console.log('  - Check that release.json is valid JSON');
         console.log('  - Verify all file paths exist');
         console.log('  - See docs/QUICK_START.md for help');
         process.exit(1);

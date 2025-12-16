@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Professional project structure files (SECURITY.md, GitHub templates, .editorconfig, .gitattributes)
+- Professional README.md following README-Maker.md guidelines
+- Badges for CI/CD, Python, Node.js, and License
+
+### Changed
+- Updated README.md to accurately reflect CI/CD and testing status
+- Corrected inaccurate "inferred" statements with evidence-based facts
+
 ## [2.3.0] - 2025-01-XX
 
 ### Added

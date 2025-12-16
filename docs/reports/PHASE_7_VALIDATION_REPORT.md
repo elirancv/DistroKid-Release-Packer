@@ -98,7 +98,7 @@ All critical fixes from Phases 1-6 have been successfully implemented and verifi
 - ✅ `overwrite` parameter added to `rename_audio_files()` (line 5)
 - ✅ `overwrite` parameter added to `organize_stems()` (line 8)
 - ✅ File existence checks before copying
-- ✅ `overwrite_existing` field in `config.example.json` (line 31)
+- ✅ `overwrite_existing` field in `release.example.json` (line 31)
 - ✅ Orchestrator passes `overwrite_existing` flag (lines 310, 337)
 
 **Verification:**
@@ -202,7 +202,7 @@ All critical fixes from Phases 1-6 have been successfully implemented and verifi
 - ✅ `debug_mode` variable (line 277)
 - ✅ Full tracebacks in debug mode (lines 317-320, 344-347, 369-372, 415-418)
 - ✅ Helpful message when debug mode is off
-- ✅ `debug` field in `config.example.json`
+- ✅ `debug` field in `release.example.json`
 
 **Verification:**
 - ✅ Debug mode off → concise error message

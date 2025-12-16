@@ -13,8 +13,12 @@ DistroKid Release Packer/
 │       └── project-guidelines.cursorrules
 │
 ├── .github/                    # GitHub configuration
-│   └── workflows/
-│       └── test.yml           # CI/CD pipeline
+│   ├── workflows/
+│   │   └── test.yml           # CI/CD pipeline
+│   ├── ISSUE_TEMPLATE/        # Issue templates
+│   │   ├── bug_report.md
+│   │   └── feature_request.md
+│   └── PULL_REQUEST_TEMPLATE.md # PR template
 │
 ├── docs/                       # All documentation
 │   ├── README.md              # Documentation index
@@ -62,13 +66,21 @@ DistroKid Release Packer/
 │       └── test_full_workflow.py
 │
 ├── .gitignore                 # Git ignore rules
+├── .editorconfig              # Editor configuration
+├── .gitattributes             # Git attributes (line endings)
+├── .pre-commit-config.yaml    # Pre-commit hooks config
 ├── LICENSE                    # MIT License
 ├── README.md                  # Main project README
+├── SECURITY.md                # Security policy
+├── CODE_OF_CONDUCT.md         # Code of conduct
+├── AUTHORS.md                 # Contributors list
 ├── Makefile                   # Build automation
 ├── requirements.txt           # Python dependencies
 ├── package.json               # JavaScript dependencies
+├── pyproject.toml             # Python packaging config
 ├── pytest.ini                 # Test configuration
-├── config.example.json        # Example configuration
+├── release.example.json       # Example configuration
+├── artist-defaults.example.json # Example artist defaults
 ├── pack.py                    # Main CLI entry point (Python)
 └── pack.js                    # Main CLI entry point (JavaScript)
 ```
@@ -84,7 +96,7 @@ DistroKid Release Packer/
 - **`requirements.txt`** - Python package dependencies
 - **`package.json`** - JavaScript dependencies and npm scripts
 - **`pytest.ini`** - Pytest configuration
-- **`config.example.json`** - Example configuration template
+- **`release.example.json`** - Example configuration template
 - **`pack.py`** - Primary CLI entry point (Python)
 - **`pack.js`** - Alternative CLI entry point (JavaScript)
 
@@ -139,7 +151,7 @@ All automation scripts are available in both Python and JavaScript:
 
 - **`.cursor/rules/`** - Cursor IDE coding standards
 - **`.github/workflows/`** - CI/CD pipeline configuration
-- **`config.example.json`** - Example configuration (copy to `config.json`)
+- **`release.example.json`** - Example configuration (copy to `release.json`)
 
 ## Output Directories (Gitignored)
 

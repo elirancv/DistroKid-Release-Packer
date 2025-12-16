@@ -16,7 +16,7 @@ const { batchTagStems } = require('./tag_stems');
 const { tagAudioFile } = require('./tag_audio_id3');
 
 function loadUserSettings() {
-  const settingsFile = 'user_settings.json';
+  const settingsFile = 'artist-defaults.json';
   if (!fs.existsSync(settingsFile)) {
     return {};
   }
@@ -33,7 +33,7 @@ function loadUserSettings() {
     }
     return filtered;
   } catch (e) {
-    // If user_settings.json is invalid, just return empty dict
+    // If artist-defaults.json is invalid, just return empty dict
     return {};
   }
 }
@@ -693,8 +693,8 @@ async function runReleaseWorkflow(config) {
 
 function main() {
   if (process.argv.length < 3) {
-    console.log('Usage: node orchestrator.js <config.json>');
-    console.log('\nExample config.json:');
+    console.log('Usage: node orchestrator.js <release.json>');
+    console.log('\nExample release.json:');
     console.log(JSON.stringify({
       artist: 'YourArtistName',
       title: 'Deep Dive',

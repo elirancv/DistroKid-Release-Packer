@@ -1,0 +1,105 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "distrokid-release-packer"
+version = "2.3.0"
+description = "Command-line automation toolkit for preparing and packaging music tracks generated in Suno for distribution via DistroKid"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Eliran Cohen", email = ""}
+]
+keywords = ["distrokid", "suno", "music", "automation", "id3", "metadata", "audio"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "mutagen>=1.47.0",
+    "Pillow>=10.0.0",
+    "librosa>=0.10.0",
+    "soundfile>=0.12.0",
+    "rich>=13.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pre-commit>=3.0.0",
+]
+
+[project.scripts]
+distrokid-pack = "pack:main"
+
+[project.urls]
+Homepage = "https://github.com/elirancv/distrokid-release-packer"
+Documentation = "https://github.com/elirancv/distrokid-release-packer#readme"
+Repository = "https://github.com/elirancv/distrokid-release-packer"
+Issues = "https://github.com/elirancv/distrokid-release-packer/issues"
+
+[tool.setuptools]
+packages = ["scripts"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-v --strict-markers --tb=short"
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Slow running tests",
+]
+
+# Optional: Black formatting configuration
+# [tool.black]
+# line-length = 100
+# target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+# include = '\.pyi?$'
+# extend-exclude = '''
+# /(
+#   __pycache__
+#   | \.git
+#   | \.venv
+#   | node_modules
+# )/
+# '''
+
+# Optional: Ruff linting configuration
+# [tool.ruff]
+# line-length = 100
+# target-version = "py38"
+# select = [
+#     "E",  # pycodestyle errors
+#     "W",  # pycodestyle warnings
+#     "F",  # pyflakes
+#     "I",  # isort
+#     "B",  # flake8-bugbear
+#     "C4", # flake8-comprehensions
+# ]
+# ignore = [
+#     "E501",  # line too long (handled by formatter)
+#     "B008",  # do not perform function calls in argument defaults
+# ]
+
+# Optional: isort configuration
+# [tool.isort]
+# profile = "black"
+# line_length = 100
+# multi_line_output = 3
+

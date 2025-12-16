@@ -11,11 +11,11 @@
 pip install -r requirements.txt
 
 # 2. Copy example config
-cp config.example.json config.json
+cp release.example.json release.json
 
-# 3. Edit config.json with your track details
+# 3. Edit release.json with your track details
 # 4. Run!
-python pack.py config.json
+python pack.py release.json
 ```
 
 **That's it!** Your release is ready in `Releases/YourTrack/`
@@ -28,14 +28,14 @@ Before running the tool, ensure you have:
 
 - [ ] **Audio file** in `exports/` directory (MP3 or WAV)
 - [ ] **Cover art** (optional) - place any `.jpg` or `.png` in `Releases/YourTrack/Cover/`
-- [ ] **Config file** (`config.json`) with track details
+- [ ] **Config file** (`release.json`) with track details
 - [ ] **FFmpeg installed** (for auto-fix clipping) - check with `ffmpeg -version`
 
 ---
 
 ## ⚙️ Essential Config Fields
 
-**Minimum required fields in `config.json`:**
+**Minimum required fields in `release.json`:**
 
 ```json
 {
@@ -50,7 +50,7 @@ Before running the tool, ensure you have:
 }
 ```
 
-**Pro tip:** Set defaults in `user_settings.json` to avoid repeating artist name, publisher, etc.
+**Pro tip:** Set defaults in `artist-defaults.json` to avoid repeating artist name, publisher, etc.
 
 ---
 
@@ -156,8 +156,8 @@ Your Project/
 │       ├── Stems/              # Organized stems
 │       ├── Cover/              # Cover art (auto-renamed)
 │       └── Metadata/           # Release metadata JSON
-├── config.json                  # Your release config
-├── user_settings.json           # Default settings (optional)
+├── release.json                  # Your release config
+├── artist-defaults.json           # Default settings (optional)
 └── pack.py                     # Main entry point
 ```
 
@@ -211,7 +211,7 @@ Your Project/
 
 ```bash
 # Run workflow
-python pack.py config.json
+python pack.py release.json
 
 # Show help
 python pack.py --help
@@ -231,16 +231,16 @@ python scripts/check_tags.py
 ## 🐛 Troubleshooting
 
 ### "File already exists"
-**Solution:** Set `"overwrite_existing": true` in `config.json`
+**Solution:** Set `"overwrite_existing": true` in `release.json`
 
 ### "Audio clipping detected"
-**Solution:** Set `"auto_fix_clipping": true` in `config.json` (requires FFmpeg)
+**Solution:** Set `"auto_fix_clipping": true` in `release.json` (requires FFmpeg)
 
 ### "Cover art not found"
 **Solution:** Place any `.jpg` or `.png` in `Releases/YourTrack/Cover/` - it will be auto-renamed
 
 ### "Config file not found"
-**Solution:** Copy `config.example.json` to `config.json` and edit it
+**Solution:** Copy `release.example.json` to `release.json` and edit it
 
 ### "mutagen not installed"
 **Solution:** Run `pip install -r requirements.txt`
@@ -258,7 +258,7 @@ python scripts/check_tags.py
 
 ## 💡 Pro Tips
 
-1. **Use `user_settings.json`** for default artist, publisher, composer template
+1. **Use `artist-defaults.json`** for default artist, publisher, composer template
 2. **Enable `auto_fix_clipping`** to automatically fix audio issues
 3. **Set `overwrite_existing: true`** when re-running for the same track
 4. **Check compliance** before uploading - the tool validates everything
@@ -307,7 +307,7 @@ Before uploading to DistroKid, verify:
 # 1. Place your audio file
 cp "MyTrack.mp3" exports/
 
-# 2. Create/update config.json
+# 2. Create/update release.json
 {
   "artist": "Playdexmusic",
   "title": "My New Track",
@@ -328,7 +328,7 @@ cp "MyTrack.mp3" exports/
 cp "cover.jpg" "Releases/MyNewTrack/Cover/"
 
 # 4. Run workflow
-python pack.py config.json
+python pack.py release.json
 
 # 5. Upload to DistroKid
 # Files ready in: Releases/MyNewTrack/Audio/
@@ -350,7 +350,7 @@ python pack.py config.json
 ## 🆘 Need Help?
 
 1. **Check error messages** - they're usually self-explanatory
-2. **Enable debug mode** - add `"debug": true` to config.json
+2. **Enable debug mode** - add `"debug": true` to release.json
 3. **Review logs** - workflow shows detailed progress
 4. **Check documentation** - see `docs/` directory
 

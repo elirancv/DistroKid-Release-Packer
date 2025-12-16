@@ -4,7 +4,7 @@ The tool can automatically fix audio clipping using FFmpeg.
 
 ## Quick Start
 
-1. **Enable auto-fix in `config.json`:**
+1. **Enable auto-fix in `release.json`:**
    ```json
    {
      "auto_fix_clipping": true
@@ -13,7 +13,7 @@ The tool can automatically fix audio clipping using FFmpeg.
 
 2. **Run the workflow:**
    ```bash
-   python pack.py config.json
+   python pack.py release.json
    ```
 
    If clipping is detected, the tool will automatically:

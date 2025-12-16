@@ -20,14 +20,14 @@ Or manually:
 
 ### 2. Config is Already Updated ✅
 
-I've updated your `config.json` with:
+I've updated your `release.json` with:
 - **Title**: "Thank You Lord (Nicolas Jaar RMX)"
 - **Release directory**: `./Releases/ThankYouLordNicolasJaarRMX`
 
 ### 3. Run the Tool
 
 ```bash
-python pack.py config.json
+python pack.py release.json
 ```
 
 ## What Will Happen

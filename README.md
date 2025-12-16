@@ -115,14 +115,30 @@ flowchart TD
 
 ```
 .
+├── .github/                   # GitHub configuration
+│   ├── workflows/             # CI/CD pipelines
+│   │   └── test.yml
+│   ├── ISSUE_TEMPLATE/       # Issue templates
+│   │   ├── bug_report.md
+│   │   └── feature_request.md
+│   └── PULL_REQUEST_TEMPLATE.md
+├── .editorconfig             # Editor configuration
+├── .gitattributes             # Git attributes (line endings)
+├── .pre-commit-config.yaml    # Pre-commit hooks
+├── LICENSE                    # MIT License
+├── README.md                  # Main project README
+├── SECURITY.md                # Security policy
+├── CODE_OF_CONDUCT.md         # Code of conduct
+├── AUTHORS.md                 # Contributors
 ├── pack.py                    # Python CLI entry point
 ├── pack.js                    # JavaScript CLI entry point
-├── release.example.json        # Release configuration template
+├── release.example.json       # Release configuration template
 ├── artist-defaults.example.json # Artist default settings template
 ├── requirements.txt           # Python dependencies
 ├── package.json               # JavaScript dependencies
-├── Makefile                   # Build automation
+├── pyproject.toml             # Python packaging config
 ├── pytest.ini                 # Test configuration
+├── Makefile                   # Build automation
 ├── scripts/                   # Workflow automation scripts
 │   ├── orchestrator.py/js     # Main workflow coordinator
 │   ├── extract_suno_version.py/js
@@ -134,8 +150,11 @@ flowchart TD
 │   ├── fix_clipping.py
 │   └── rich_utils.py          # Terminal output utilities
 ├── docs/                      # Documentation
+│   ├── README.md              # Documentation index
 │   ├── QUICK_START.md
 │   ├── WORKFLOW.md
+│   ├── CONTRIBUTING.md        # Contribution guidelines
+│   ├── CHANGELOG.md           # Version history
 │   └── ...
 ├── tests/                     # Test suite
 │   ├── unit/                  # Unit tests
@@ -407,7 +426,7 @@ make test
 - File operations: `pathlib.Path` (Python), `path.join()` (JavaScript)
 
 **Known gaps:**
-- No automated linting/formatting configuration detected (no `.flake8`, `.pylintrc`, `pyproject.toml`, or `.ruff.toml` found)
+- No automated linting/formatting configuration detected (`.pre-commit-config.yaml` exists but linting tools commented out; no `.flake8`, `.pylintrc`, or `.ruff.toml` found)
 
 ---
 
@@ -524,21 +543,22 @@ A: Some path handling may differ. Use WSL2 or report issue with details.
 
 ## License & Attribution
 
-**License:** MIT License
+**License:** [MIT License](LICENSE)
 
-See `LICENSE` file for full license text.
-
-**Copyright:** Copyright (c) 2025 DistroKid Release Packer
+**Copyright:** Copyright (c) 2025 Eliran Cohen
 
 ---
 
 ## References & Further Reading
 
 **Documentation:**
+- `docs/README.md` - Documentation index
 - `docs/QUICK_START.md` - Getting started guide
 - `docs/WORKFLOW.md` - Complete workflow checklist
 - `docs/HOW_IT_WORKS.md` - Tool architecture explanation
 - `docs/USAGE_GUIDE.md` - Detailed usage instructions
+- `docs/CONTRIBUTING.md` - Contribution guidelines
+- `docs/CHANGELOG.md` - Version history
 - `scripts/README.md` - Scripts documentation
 
 **External resources:**

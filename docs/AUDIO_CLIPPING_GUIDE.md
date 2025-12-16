@@ -75,8 +75,8 @@ ffmpeg -i "your-file.mp3" -af "volume=-1dB" "your-file-fixed.mp3"
 ## After Fixing
 
 1. Replace the file in `exports/` directory
-2. Set `"overwrite_existing": true` in `config.json`
-3. Run the tool again: `python pack.py config.json`
+2. Set `"overwrite_existing": true` in `release.json`
+3. Run the tool again: `python pack.py release.json`
 4. Verify clipping check passes: `✅ PASSED` (no clipping detected)
 
 ---

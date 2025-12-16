@@ -18,7 +18,7 @@ tag_audio_file("track.mp3", "cover.jpg", {
 
 **Run script directly:**
 ```bash
-python scripts/orchestrator.py config.json
+python scripts/orchestrator.py release.json
 ```
 
 For complete workflow usage, see the main `README.md`.
@@ -197,7 +197,7 @@ node -e "require('./scripts/orchestrator'); console.log('OK')"
 
 ## Environment & Configuration
 
-**Not detected:** Scripts do not have their own configuration files. They receive configuration through function arguments or from the orchestrator's merged config (`user_settings.json` + `config.json`).
+**Not detected:** Scripts do not have their own configuration files. They receive configuration through function arguments or from the orchestrator's merged config (`artist-defaults.json` + `release.json`).
 
 **Inferred:** Scripts read configuration from the orchestrator's merged config when called programmatically.
 
@@ -207,7 +207,7 @@ node -e "require('./scripts/orchestrator'); console.log('OK')"
 
 **Python script execution:**
 ```bash
-python scripts/orchestrator.py config.json
+python scripts/orchestrator.py release.json
 python scripts/extract_suno_version.py
 python scripts/rename_audio_files.py
 python scripts/tag_audio_id3.py
@@ -216,7 +216,7 @@ python scripts/validate_compliance.py
 
 **JavaScript script execution:**
 ```bash
-node scripts/orchestrator.js config.json
+node scripts/orchestrator.js release.json
 node scripts/extract_suno_version.js
 node scripts/rename_audio_files.js
 node scripts/tag_audio_id3.js

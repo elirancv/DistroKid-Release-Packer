@@ -1,6 +1,6 @@
 {
-  "_comment": "User Settings - Default values used across all releases",
-  "_comment2": "Copy this file to user_settings.json and customize for your artist",
+  "_comment": "Artist Defaults - Default values used across all releases",
+  "_comment2": "Copy this file to artist-defaults.json and customize for your artist",
   
   "default_artist": "YourArtistName",
   "default_publisher": "Independent",
@@ -9,8 +9,8 @@
   "default_total_tracks": "1",
   "default_copyright_template": "© {year} {artist}",
   
-  "_note": "These defaults are used when not specified in config.json",
-  "_note2": "You can override any default in your release-specific config.json",
+  "_note": "These defaults are used when not specified in release.json",
+  "_note2": "You can override any default in your release-specific release.json",
   "_note3": "Track number format: '1' for singles, '1/5' for multi-track releases (track/total)"
 }
 

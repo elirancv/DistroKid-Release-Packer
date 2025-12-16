@@ -27,7 +27,7 @@ def test_load_config_malformed_json(tmp_path):
 def test_load_config_missing_file():
     """Test load_config handles missing file."""
     with pytest.raises(FileNotFoundError, match="Config file not found"):
-        load_config("/nonexistent/path/config.json")
+        load_config("/nonexistent/path/release.json")
 
 
 def test_load_config_valid_json(tmp_path):

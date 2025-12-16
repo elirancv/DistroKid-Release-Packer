@@ -43,8 +43,8 @@ from rich_utils import (
 
 
 def load_user_settings():
-    """Load user settings from user_settings.json (if exists)."""
-    settings_file = Path("user_settings.json")
+    """Load user settings from artist-defaults.json (if exists)."""
+    settings_file = Path("artist-defaults.json")
     if not settings_file.exists():
         return {}
 
@@ -54,7 +54,7 @@ def load_user_settings():
             # Filter out comment fields
             return {k: v for k, v in settings.items() if not k.startswith("_")}
     except (json.JSONDecodeError, UnicodeDecodeError):
-        # If user_settings.json is invalid, just return empty dict
+        # If artist-defaults.json is invalid, just return empty dict
         return {}
 
 
@@ -138,7 +138,7 @@ def load_config(config_path):
                     "tracknumber"
                 ] = f"{default_track}/{default_total}"
     # Note: We don't auto-create id3_metadata just for track numbers
-    # Track numbers are optional and should be explicitly set in config.json
+    # Track numbers are optional and should be explicitly set in release.json
 
     # Merge everything: user settings → release config → merged overrides
     final_config = {**user_settings, **release_config, **merged_config}
@@ -806,9 +806,9 @@ def run_release_workflow(config):
 def main():
     """Main entry point."""
     if len(sys.argv) < 2:
-        console.print("[bold]Usage:[/bold] [green]python orchestrator.py <config.json>[/green]")
+        console.print("[bold]Usage:[/bold] [green]python orchestrator.py <release.json>[/green]")
         console.print()
-        console.print("[bold]Example config.json:[/bold]")
+        console.print("[bold]Example release.json:[/bold]")
         from rich.json import JSON
         example_config = {
             "artist": "YourArtistName",

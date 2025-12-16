@@ -1,11 +1,7 @@
 {
-  "_comment": "Release-specific configuration",
-  "_note": "Artist name, publisher, and composer can be set in artist-defaults.json",
-  "_note2": "If not specified here, defaults from artist-defaults.json will be used",
-  
-  "artist": "YourArtistName",
-  "title": "Deep Dive",
-  "release_dir": "./Releases/DeepDive",
+  "artist": "Playdexmusic",
+  "title": "Thank You Lord (Nicolas Jaar RMX)",
+  "release_dir": "./Releases/ThankYouLordNicolasJaarRMX",
   "suno_url": "https://suno.com/song/abc123xyz?v=5",
   "source_audio_dir": "./exports",
   "source_stems_dir": "./exports/stems",
@@ -22,12 +18,8 @@
     "album": "Summer Vibes EP",
     "year": "2025",
     "tracknumber": "1/5",
-    "composer": "YourArtistName + Suno AI",
-    "publisher": "Independent",
-    "album_artist": "YourArtistName",
-    "copyright": "© 2025 YourArtistName",
-    "isrc": "",
-    "comment": ""
+    "composer": "Playdexmusic + Suno AI",
+    "publisher": "Independent"
   },
   "rename_audio": true,
   "organize_stems": true,
@@ -37,6 +29,6 @@
   "validate_compliance": true,
   "strict_mode": false,
   "overwrite_existing": false,
-  "auto_fix_clipping": false
+  "auto_fix_clipping": true
 }
 

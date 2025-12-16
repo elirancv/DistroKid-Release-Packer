@@ -1,21 +1,21 @@
-# User Settings Guide
+# Artist Defaults Guide
 
 ## Overview
 
-The **User Settings** feature lets you set default values (like your artist name) in **one central place** instead of repeating them in every release config file.
+The **Artist Defaults** feature lets you set default values (like your artist name) in **one central place** instead of repeating them in every release config file.
 
 ## Quick Setup
 
-### Step 1: Create Your User Settings File
+### Step 1: Create Your Artist Defaults File
 
 ```bash
 # Copy the example file
-cp user_settings.example.json user_settings.json
+cp artist-defaults.example.json artist-defaults.json
 ```
 
-### Step 2: Edit `user_settings.json`
+### Step 2: Edit `artist-defaults.json`
 
-Open `user_settings.json` and set your defaults:
+Open `artist-defaults.json` and set your defaults:
 
 ```json
 {
@@ -33,12 +33,12 @@ Open `user_settings.json` and set your defaults:
 
 ### Priority Order
 
-1. **User Settings** (`user_settings.json`) - Your defaults
-2. **Release Config** (`config.json`) - Overrides defaults
+1. **Artist Defaults** (`artist-defaults.json`) - Your defaults
+2. **Release Config** (`release.json`) - Overrides defaults
 
 ### Example
 
-**`user_settings.json`:**
+**`artist-defaults.json`:**
 ```json
 {
   "default_artist": "YourArtistName",
@@ -46,15 +46,15 @@ Open `user_settings.json` and set your defaults:
 }
 ```
 
-**`config.json` (Release 1):**
+**`release.json` (Release 1):**
 ```json
 {
   "title": "Deep Dive"
-  // No "artist" specified → uses default from user_settings.json
+  // No "artist" specified → uses default from artist-defaults.json
 }
 ```
 
-**`config.json` (Release 2 - Different Artist):**
+**`release.json` (Release 2 - Different Artist):**
 ```json
 {
   "title": "Collab Track",
@@ -81,7 +81,7 @@ Open `user_settings.json` and set your defaults:
 
 ## Override Per Release
 
-You can always override defaults in your `config.json`:
+You can always override defaults in your `release.json`:
 
 ```json
 {
@@ -103,21 +103,21 @@ You can always override defaults in your `config.json`:
 **For Multi-Track Releases (EPs/Albums):**
 - Set `default_track_number: "1"` and `default_total_tracks: "5"`
 - Result: `tracknumber: "1/5"` (track 1 of 5)
-- Override per track in `config.json`: `"tracknumber": "2/5"` (track 2 of 5)
+- Override per track in `release.json`: `"tracknumber": "2/5"` (track 2 of 5)
 
 ## Troubleshooting
 
 **Q: My artist name isn't being used**  
-A: Make sure `user_settings.json` exists and has `default_artist` set correctly.
+A: Make sure `artist-defaults.json` exists and has `default_artist` set correctly.
 
 **Q: Can I have different artists for different releases?**  
-A: Yes! Just specify `"artist"` in each `config.json` to override the default.
+A: Yes! Just specify `"artist"` in each `release.json` to override the default.
 
-**Q: What if I don't create `user_settings.json`?**  
-A: The tool will work fine, but you'll need to specify `artist` in every `config.json`.
+**Q: What if I don't create `artist-defaults.json`?**  
+A: The tool will work fine, but you'll need to specify `artist` in every `release.json`.
 
 ## File Location
 
-- **Template:** `user_settings.example.json` (tracked in git)
-- **Your Settings:** `user_settings.json` (gitignored, personal to you)
+- **Template:** `artist-defaults.example.json` (tracked in git)
+- **Your Settings:** `artist-defaults.json` (gitignored, personal to you)
 

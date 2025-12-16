@@ -21,7 +21,7 @@
     "id3",
     "metadata"
   ],
-  "author": "",
+  "author": "Eliran Cohen",
   "license": "MIT",
   "dependencies": {
     "node-id3": "^0.2.1",

@@ -12,7 +12,7 @@ make setup
 
 This will:
 - Install Python dependencies
-- Create config.json from example (if it doesn't exist)
+- Create release.json from example (if it doesn't exist)
 
 ### Manual Installation
 
@@ -32,7 +32,7 @@ npm install
 
 1. **Create a config file:**
 
-Copy `config.example.json` to `config.json` and edit:
+Copy `release.example.json` to `release.json` and edit:
 
 ```json
 {
@@ -57,10 +57,10 @@ make run
 **Or directly:**
 ```bash
 # Python (Recommended)
-python pack.py config.json
+python pack.py release.json
 
 # JavaScript
-node pack.js config.json
+node pack.js release.json
 ```
 
 **See all commands:**
@@ -185,7 +185,7 @@ npm install
 ### Files not found
 
 - Check that source directories exist
-- Verify file paths in config.json
+- Verify file paths in release.json
 - Ensure audio files are in the source directory
 
 ### Validation failures
@@ -193,7 +193,7 @@ npm install
 - Check file sizes (audio <500MB, cover <5MB)
 - Verify cover art is exactly 3000×3000 pixels
 - Ensure metadata fields are within character limits
-- Check that required fields (artist, title) are present in config.json
+- Check that required fields (artist, title) are present in release.json
 - Verify BPM is between 1-300 if specified
 - Ensure track number format is "X/Total" if using multi-track releases
 
@@ -203,17 +203,17 @@ If you get validation errors:
 - Check that `artist` and `title` fields are present and not empty
 - Verify field types (bpm must be number, boolean fields must be true/false)
 - Check for invalid characters in artist/title (they'll be sanitized automatically)
-- Use `debug: true` in config.json for detailed error messages
+- Use `debug: true` in release.json for detailed error messages
 
 ### File overwrite errors
 
 If you get "File already exists" errors:
-- Set `overwrite_existing: true` in config.json to allow overwriting
+- Set `overwrite_existing: true` in release.json to allow overwriting
 - Or manually delete existing files in the release directory
 
 ### Debug mode
 
-For detailed error information, add to config.json:
+For detailed error information, add to release.json:
 ```json
 {
   "debug": true

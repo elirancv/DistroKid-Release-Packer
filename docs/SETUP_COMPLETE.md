@@ -24,10 +24,10 @@ Your DistroKid Release Packer automation system is now fully configured and read
 - ✅ `QUICK_START.md` - Quick start guide
 - ✅ `scripts/README.md` - Detailed scripts documentation
 - ✅ `REFACTORING_SUMMARY.md` - Code refactoring details
-- ✅ `config.example.json` - Example configuration file
+- ✅ `release.example.json` - Example configuration file
 
 ### 🔧 Configuration
-- ✅ `config.example.json` - Template for workflow configuration
+- ✅ `release.example.json` - Template for workflow configuration
 - ✅ Updated `DistroKid Release Packer.md` - References to scripts added
 
 ## Next Steps
@@ -45,18 +45,18 @@ npm install
 ### 2. Create Your First Config
 
 ```bash
-cp config.example.json config.json
-# Edit config.json with your track details
+cp release.example.json release.json
+# Edit release.json with your track details
 ```
 
 ### 3. Run Your First Workflow
 
 ```bash
 # Python
-python scripts/orchestrator.py config.json
+python scripts/orchestrator.py release.json
 
 # JavaScript
-node scripts/orchestrator.js config.json
+node scripts/orchestrator.js release.json
 ```
 
 ## File Structure
@@ -76,7 +76,7 @@ DistroKid Release Packer/
 ├── .cursor/
 │   └── rules/
 │       └── distrokid.cursorrules  # Coding standards
-├── config.example.json          # Configuration template
+├── release.example.json          # Configuration template
 ├── requirements.txt            # Python dependencies
 ├── package.json                # JavaScript dependencies
 ├── README.md                   # Main project README
@@ -98,7 +98,7 @@ DistroKid Release Packer/
 
 ```bash
 # Run complete workflow
-python scripts/orchestrator.py config.json
+python scripts/orchestrator.py release.json
 
 # Individual scripts
 python scripts/rename_audio_files.py

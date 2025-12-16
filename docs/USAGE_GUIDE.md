@@ -22,23 +22,23 @@ pip install -r requirements.txt
 
 ```bash
 # Copy the example
-cp config.example.json config.json
+cp release.example.json release.json
 
-# Edit config.json with your track details
+# Edit release.json with your track details
 # (Use any text editor)
 ```
 
 ### Step 3: Run
 
 ```bash
-python pack.py config.json
+python pack.py release.json
 ```
 
 **That's it!** The tool does everything automatically.
 
 ## What It Does
 
-When you run `python pack.py config.json`, it:
+When you run `python pack.py release.json`, it:
 
 1. ✅ Validates your configuration (required fields, types, values)
 2. ✅ Checks dependencies (mutagen, Pillow) - fails fast if missing
@@ -60,7 +60,7 @@ When you run `python pack.py config.json`, it:
 
 ```bash
 # Main command - run the workflow
-python pack.py config.json
+python pack.py release.json
 
 # Show help
 python pack.py --help
@@ -78,12 +78,12 @@ Collecting mutagen...
 Successfully installed mutagen-1.47.0 Pillow-10.0.0
 
 # 2. Create config
-$ cp config.example.json config.json
-$ nano config.json  # Edit with your details
+$ cp release.example.json release.json
+$ nano release.json  # Edit with your details
 
 # 3. Run the tool
-$ python pack.py config.json
-📋 Loading config: config.json
+$ python pack.py release.json
+📋 Loading config: release.json
 
 🚀 Starting DistroKid Release Packer Workflow
 
@@ -141,7 +141,7 @@ But `pack.py` is easier - it does everything at once.
 ## Troubleshooting
 
 ### "Config file not found"
-- Make sure you created `config.json` from `config.example.json`
+- Make sure you created `release.json` from `release.example.json`
 - Check the file path is correct
 
 ### "Module not found"
@@ -149,7 +149,7 @@ But `pack.py` is easier - it does everything at once.
 
 ### "File not found" errors
 - Check that your source directories exist
-- Verify paths in config.json are correct
+- Verify paths in release.json are correct
 
 ## More Information
 

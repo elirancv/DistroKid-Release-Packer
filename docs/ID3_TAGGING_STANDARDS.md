@@ -40,7 +40,7 @@ These reduce rejection risk and improve DSP ingestion quality.
 |-----|-----------|----------------|-------------|
 | **Album Artist** | TPE2 | Prevents compilation issues | ✅ **Auto-set to artist if not specified** |
 | **Composer** | TCOM | Required by Apple Music logic | ✅ **Auto-generated from template** |
-| **Publisher / Label** | TPUB | Even "Self-Released" | ✅ **Auto-set from user_settings.json** |
+| **Publisher / Label** | TPUB | Even "Self-Released" | ✅ **Auto-set from artist-defaults.json** |
 | **Copyright** | TCOP | Ownership clarity | ✅ **Auto-generated: © YEAR ARTIST** |
 | **BPM** | TBPM | DJ / catalog systems | ✅ **Auto-set from config.bpm** |
 | **ISRC** | TSRC | DistroKid will generate, but archive it | ✅ **Auto-set from config.isrc** |
@@ -126,7 +126,7 @@ The tool automatically applies **all required and recommended tags**:
 
 ### Configuration
 
-**In `config.json`:**
+**In `release.json`:**
 ```json
 {
   "bpm": 122,
@@ -144,7 +144,7 @@ The tool automatically applies **all required and recommended tags**:
 }
 ```
 
-**In `user_settings.json` (defaults):**
+**In `artist-defaults.json` (defaults):**
 ```json
 {
   "default_publisher": "Independent",

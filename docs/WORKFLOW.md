@@ -1624,12 +1624,12 @@ Use the orchestrator script to run the entire workflow automatically:
 
 **Python:**
 ```bash
-python scripts/orchestrator.py config.json
+python scripts/orchestrator.py release.json
 ```
 
 **JavaScript:**
 ```bash
-node scripts/orchestrator.js config.json
+node scripts/orchestrator.js release.json
 ```
 
 See [QUICK_START.md](QUICK_START.md) and [scripts/README.md](../scripts/README.md) for details.
