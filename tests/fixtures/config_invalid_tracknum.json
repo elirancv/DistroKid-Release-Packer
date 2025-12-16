@@ -1,0 +1,8 @@
+{
+  "artist": "Test Artist",
+  "title": "Test Track",
+  "id3_metadata": {
+    "tracknumber": "invalid-format"
+  }
+}
+

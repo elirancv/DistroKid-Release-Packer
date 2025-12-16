@@ -1,0 +1,35 @@
+{
+  "name": "distrokid-release-packer",
+  "version": "2.3.0",
+  "description": "Automation scripts for Suno → DistroKid release workflow",
+  "main": "scripts/orchestrator.js",
+  "scripts": {
+    "extract-version": "node scripts/extract_suno_version.js",
+    "rename-audio": "node scripts/rename_audio_files.js",
+    "organize-stems": "node scripts/organize_stems.js",
+    "tag-stems": "node scripts/tag_stems.js",
+    "tag-audio": "node scripts/tag_audio_id3.js",
+    "validate-cover": "node scripts/validate_cover_art.js",
+    "validate-compliance": "node scripts/validate_compliance.js",
+    "orchestrate": "node scripts/orchestrator.js"
+  },
+  "keywords": [
+    "distrokid",
+    "suno",
+    "music",
+    "automation",
+    "id3",
+    "metadata"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "node-id3": "^0.2.1",
+    "sharp": "^0.32.6"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
+

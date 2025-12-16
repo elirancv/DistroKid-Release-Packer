@@ -1,0 +1,20 @@
+{
+  "artist": "YourArtistName",
+  "title": "example",
+  "created_date": "2025-12-16T20:25:40.796321Z",
+  "genre": "Deep House",
+  "bpm": 122,
+  "key": "C minor",
+  "explicit": false,
+  "language": "English",
+  "mood": "Energetic",
+  "target_regions": [
+    "US",
+    "UK",
+    "EU"
+  ],
+  "isrc": "",
+  "upc": "",
+  "suno_version": "5",
+  "suno_build_id": ""
+}

@@ -1,0 +1,40 @@
+# DistroKid Release Packer - Python Dependencies
+#
+# For JavaScript/Node.js dependencies, see package.json
+# Install with: npm install (or: make install-js)
+
+# Audio file handling and ID3 tagging
+mutagen>=1.47.0
+
+# Image processing for cover art validation
+Pillow>=10.0.0
+
+# Audio analysis for clipping detection (optional but recommended)
+# Note: librosa has many dependencies - pip will install them automatically
+# Key dependencies listed explicitly for clarity and to avoid installation issues:
+numpy>=1.21.0
+scipy>=1.7.0
+numba>=0.56.0
+librosa>=0.10.0
+soundfile>=0.12.0
+
+# Terminal output and formatting
+rich>=13.0.0
+
+# Testing framework
+pytest>=7.0.0
+pytest-cov>=4.0.0
+
+# Standard library (no installation needed):
+# - json
+# - pathlib
+# - datetime
+# - wave
+# - shutil
+# - re
+# - urllib.parse
+# - subprocess
+# - sys
+# - os
+# - time
+

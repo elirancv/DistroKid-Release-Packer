@@ -1,0 +1,24 @@
+{
+  "artist": "Test Artist",
+  "title": "Test Track",
+  "release_dir": "./Releases/TestTrack",
+  "source_audio_dir": "./tests/fixtures",
+  "genre": "Test Genre",
+  "bpm": 120,
+  "id3_metadata": {
+    "album": "Test Album",
+    "year": "2025",
+    "tracknumber": "1/10",
+    "composer": "Test Composer",
+    "publisher": "Independent"
+  },
+  "rename_audio": true,
+  "organize_stems": false,
+  "tag_stems": false,
+  "tag_audio": false,
+  "validate_cover": false,
+  "validate_compliance": false,
+  "strict_mode": false,
+  "overwrite_existing": false
+}
+
