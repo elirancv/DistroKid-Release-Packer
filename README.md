@@ -1,5 +1,10 @@
 # DistroKid Release Packer
 
+[![Tests](https://github.com/elirancv/distrokid-release-packer/workflows/Tests/badge.svg)](https://github.com/elirancv/distrokid-release-packer/actions)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Node.js 14+](https://img.shields.io/badge/node.js-14+-green.svg)](https://nodejs.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Command-line automation toolkit for preparing and packaging music tracks generated in Suno for distribution via DistroKid. Automates the complete workflow from audio file export to DistroKid-ready release packages with ID3v2 metadata tagging, compliance validation, and standardized file organization.
 
 ---
@@ -16,7 +21,7 @@ Command-line automation toolkit for preparing and packaging music tracks generat
 # Install dependencies
 make setup
 
-# Edit config.json with your track details
+# Edit release.json with your track details
 # Place audio files in exports/ directory
 
 # Run workflow
@@ -71,7 +76,7 @@ The project follows a modular script-based architecture where individual workflo
 
 ```mermaid
 flowchart TD
-    A[User: pack.py config.json] --> B[Orchestrator]
+    A[User: pack.py release.json] --> B[Orchestrator]
     B --> C[Extract Suno Version]
     B --> D[Rename Audio Files]
     B --> E[Organize Stems]
@@ -102,7 +107,7 @@ flowchart TD
 10. Generate release metadata JSON file
 11. Release workflow lock
 
-**Configuration system:** Two-tier configuration with `user_settings.json` (defaults) merged with release-specific `config.json`.
+**Configuration system:** Two-tier configuration with `artist-defaults.json` (defaults) merged with release-specific `release.json`.
 
 ---
 
@@ -112,8 +117,8 @@ flowchart TD
 .
 ├── pack.py                    # Python CLI entry point
 ├── pack.js                    # JavaScript CLI entry point
-├── config.example.json        # Configuration template
-├── user_settings.example.json # User default settings template
+├── release.example.json        # Release configuration template
+├── artist-defaults.example.json # Artist default settings template
 ├── requirements.txt           # Python dependencies
 ├── package.json               # JavaScript dependencies
 ├── Makefile                   # Build automation
@@ -134,7 +139,7 @@ flowchart TD
 │   └── ...
 ├── tests/                     # Test suite
 │   ├── unit/                  # Unit tests
-│   ├── integration/           # Integration tests
+│   ├── integration/          # Integration tests
 │   └── fixtures/              # Test data
 ├── exports/                   # Source audio files (gitignored)
 └── Releases/                  # Generated releases (gitignored)
@@ -153,7 +158,7 @@ flowchart TD
 
 **Primary entry point:**
 ```bash
-python pack.py config.json
+python pack.py release.json
 ```
 
 **CLI commands:**
@@ -167,7 +172,7 @@ python pack.py --example   # Show example config
 from scripts.orchestrator import run_release_workflow, load_config
 
 # Load configuration
-config = load_config("config.json")
+config = load_config("release.json")
 
 # Run workflow
 success = run_release_workflow(config)
@@ -178,7 +183,7 @@ success = run_release_workflow(config)
 const { runReleaseWorkflow, loadConfig } = require('./scripts/orchestrator');
 
 // Load configuration
-const config = loadConfig('config.json');
+const config = loadConfig('release.json');
 
 // Run workflow
 runReleaseWorkflow(config).then(success => {
@@ -225,7 +230,7 @@ For complete API documentation, see `scripts/README.md`.
 make setup
 ```
 
-This installs Python dependencies and creates `config.json` from `config.example.json` if missing.
+This installs Python dependencies and creates `release.json` from `release.example.json` if missing.
 
 **Option 2: Manual Installation**
 ```bash
@@ -236,8 +241,8 @@ pip install -r requirements.txt
 npm install
 
 # Create configuration files
-cp config.example.json config.json
-cp user_settings.example.json user_settings.json
+cp release.example.json release.json
+cp artist-defaults.example.json artist-defaults.json
 ```
 
 ### Verify Installation
@@ -270,12 +275,12 @@ python -c "import mutagen, PIL, librosa; print('Dependencies OK')"
 ## Environment & Configuration
 
 **Configuration files:**
-- `user_settings.json` - Default values (artist name, publisher, composer template)
-- `config.json` - Release-specific configuration
+- `artist-defaults.json` - Default values (artist name, publisher, composer template)
+- `release.json` - Release-specific configuration
 
 **Configuration precedence:**
-1. `config.json` (release-specific, overrides defaults)
-2. `user_settings.json` (defaults, used if not in config.json)
+1. `release.json` (release-specific, overrides defaults)
+2. `artist-defaults.json` (defaults, used if not in release.json)
 
 **Required fields:**
 - `title` - Track title
@@ -283,7 +288,7 @@ python -c "import mutagen, PIL, librosa; print('Dependencies OK')"
 - `release_dir` - Output directory path
 
 **Optional fields:**
-- `artist` - Artist name (uses `user_settings.json` default if not specified)
+- `artist` - Artist name (uses `artist-defaults.json` default if not specified)
 - `suno_url` - Suno track URL (for version extraction)
 - `source_stems_dir` - Source stems directory
 - `genre`, `bpm`, `key`, `explicit`, `language`, `mood`, `target_regions`
@@ -311,19 +316,19 @@ Not detected - No environment variable usage in codebase.
 **Makefile commands:**
 
 **Setup:**
-- `make setup` - Install dependencies and create config.json
+- `make setup` - Install dependencies and create release.json
 - `make install` - Install Python dependencies
 - `make install-js` - Install JavaScript dependencies
 - `make install-all` - Install all dependencies
 
 **Execution:**
-- `make run` - Run the release packer (requires config.json)
+- `make run` - Run the release packer (requires release.json)
 - `make run-js` - Run using JavaScript orchestrator
 
 **Utilities:**
 - `make help` - Show all available commands
 - `make example` - Show example configuration
-- `make validate` - Validate config.json syntax
+- `make validate` - Validate release.json syntax
 - `make check` - Check if dependencies are installed
 - `make clean` - Clean temporary files (keeps Releases/)
 - `make clean-all` - Clean everything including Releases/
@@ -451,7 +456,7 @@ make test
 | Item | Priority | Details |
 |------|----------|---------|
 | Implement structured logging | High | Replace print statements with logging module |
-| Add JSON schema validation | Medium | Validate config.json structure with jsonschema |
+| Add JSON schema validation | Medium | Validate release.json structure with jsonschema |
 | Add batch processing | Medium | Process multiple releases from directory |
 | Add Docker containerization | Low | Consistent execution environment |
 | Add error recovery | Medium | Retry mechanisms for transient failures |
@@ -473,7 +478,7 @@ make test
 A: Install dependencies: `pip install -r requirements.txt`
 
 **Q: Config file not found**
-A: Create from example: `cp config.example.json config.json`
+A: Create from example: `cp release.example.json release.json`
 
 **Q: Audio file not found**
 A: Ensure audio files are in `source_audio_dir` (default: `./exports`)
