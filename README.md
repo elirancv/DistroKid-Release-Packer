@@ -18,11 +18,11 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
+- [Technology Stack](#technology-stack)
 - [Architecture](#architecture)
 - [Project Structure](#project-structure)
 - [Development](#development)
 - [Testing](#testing)
-- [Technology Stack](#technology-stack)
 - [Troubleshooting](#troubleshooting)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
@@ -35,16 +35,16 @@
 
 **Core Capabilities:**
 - ✅ **Automated Workflow** - Complete Suno → DistroKid pipeline automation
-- ✅ **Rich CLI Interface** - Beautiful, production-ready CLI with Typer and Rich formatting
-- ✅ **ID3v2 Tagging** - Full metadata embedding with cover art support
+- ✅ **Rich CLI Interface** - Typer-based CLI with Rich terminal formatting and enhanced error handling
+- ✅ **ID3v2 Tagging** - Full metadata embedding with cover art support via mutagen library
 - ✅ **Compliance Validation** - DistroKid requirements checking (dimensions, file size, audio specs)
-- ✅ **Batch Processing** - Process multiple releases in a single run with `--batch` flag
+- ✅ **Batch Processing** - Process multiple releases in a single run
 - ✅ **Schema Validation** - JSON schema validation with fallback basic validation
 - ✅ **Atomic Operations** - Safe file operations with temporary files and atomic renames
 - ✅ **Concurrency Safety** - Lock file mechanism prevents concurrent execution conflicts
 - ✅ **Structured Logging** - Rotating log files with detailed context (10MB max, 5 backups)
 - ✅ **Error Recovery** - Retry mechanisms with exponential backoff for transient failures
-- ✅ **Enhanced Error Handling** - Beautiful error messages with actionable solutions and UTF-8 support
+- ✅ **Enhanced Error Handling** - Rich-formatted error messages with actionable solutions and UTF-8 encoding support
 - ✅ **Windows Support** - Long path support via pywin32 and reserved filename handling
 
 **Production-Ready:**
@@ -158,11 +158,11 @@ python -c "import mutagen, PIL, librosa; print('Dependencies OK')"
 
 ### CLI Commands
 
-**Rich CLI (Recommended) - Beautiful, Production-Ready Interface:**
+**Rich CLI (Recommended):**
 ```bash
 # After installation, use the 'distrokid' command
 distrokid --help                    # Show help
-distrokid --version                 # Show version with beautiful formatting
+distrokid --version                 # Show version
 
 # Process releases
 distrokid pack configs/release.json              # Process single release
@@ -197,14 +197,6 @@ distrokid logs clear --dry-run                  # Preview what would be deleted
 distrokid init                                   # Initialize project structure
 distrokid init --force                           # Overwrite existing files
 ```
-
-**CLI Features:**
-- 🎨 **Beautiful Rich Formatting** - Colorful panels, tables, and syntax highlighting
-- ❌ **Enhanced Error Handling** - Clear error messages with actionable solutions
-- 🔤 **UTF-8 Support** - Automatic encoding detection and helpful error messages
-- 🧹 **Clean Logs** - Automatic filtering of test-related entries
-- 📊 **Status Reporting** - Beautiful status panels with success/failure counts
-- 🎯 **Production-Ready** - Comprehensive error handling and graceful failures
 
 **Legacy CLI (Still supported):**
 ```bash
@@ -316,6 +308,36 @@ See `configs/release.example.json` for a complete example configuration.
 
 ---
 
+## Technology Stack
+
+**Runtime & Language:**
+- Python 3.8+ (primary implementation)
+- Node.js 14+ (alternative implementation)
+
+**Core Dependencies:**
+- `mutagen>=1.47.0` - ID3v2 metadata tagging
+- `Pillow>=10.0.0` - Image processing
+- `librosa>=0.10.0` - Audio analysis (optional)
+- `soundfile>=0.12.0` - Audio file I/O
+- `rich>=13.0.0` - Terminal output formatting
+- `typer>=0.9.0` - CLI framework with Rich integration
+- `jsonschema>=4.17.0` - JSON schema validation
+- `pywin32>=306` - Windows long path support (Windows only)
+
+**Development Tools:**
+- `pytest>=7.0.0` - Testing framework
+- `pytest-cov>=4.0.0` - Test coverage reporting
+- `ruff>=0.1.0` - Fast Python linter and formatter
+- `pre-commit>=3.0.0` - Git hooks framework
+
+**Compatibility:**
+- Python: 3.8, 3.9, 3.10, 3.11, 3.12
+- Node.js: 14.0+, 16.0+, 18.0+, 20.0+
+- OS: Linux, macOS, Windows
+- Audio formats: MP3 (tagging), WAV (stems, analysis)
+
+---
+
 ## Architecture
 
 The project follows a modular script-based architecture where individual workflow steps are implemented as separate scripts, orchestrated by a central coordinator.
@@ -375,12 +397,23 @@ flowchart TD
 │   ├── release_schema.json
 │   └── artist_defaults_schema.json
 ├── scripts/                   # Workflow automation scripts
-│   ├── pack.py/js            # CLI entry points
+│   ├── cli.py                # Main Rich CLI entry point
+│   ├── pack.py/js            # Legacy CLI entry points
 │   ├── orchestrator.py/js     # Main workflow coordinator
 │   ├── batch_processor.py     # Batch processing
 │   ├── logger_config.py       # Structured logging
 │   ├── validate_config.py     # Schema validation
 │   ├── retry_utils.py         # Error recovery
+│   ├── rich_utils.py          # Rich formatting utilities
+│   ├── commands/              # CLI command modules
+│   │   ├── pack.py
+│   │   ├── batch.py
+│   │   ├── validate.py
+│   │   ├── config.py
+│   │   ├── logs.py
+│   │   ├── status.py
+│   │   ├── check.py
+│   │   └── init.py
 │   ├── extract_suno_version.py/js
 │   ├── rename_audio_files.py/js
 │   ├── organize_stems.py/js
@@ -413,6 +446,7 @@ flowchart TD
 
 **Key directories:**
 - `scripts/` - Modular workflow scripts and CLI entry points (Python and JavaScript variants)
+- `scripts/commands/` - Typer-based CLI command modules
 - `configs/` - Configuration files (example templates and runtime configs)
 - `schemas/` - JSON schema definitions for configuration validation
 - `docs/` - Comprehensive documentation and guides
@@ -496,36 +530,6 @@ make test-integration  # Run integration tests only
 
 ---
 
-## Technology Stack
-
-**Runtime & Language:**
-- Python 3.8+ (primary implementation)
-- Node.js 14+ (alternative implementation)
-
-**Core Dependencies:**
-- `mutagen>=1.47.0` - ID3v2 metadata tagging
-- `Pillow>=10.0.0` - Image processing
-- `librosa>=0.10.0` - Audio analysis (optional)
-- `soundfile>=0.12.0` - Audio file I/O
-- `rich>=13.0.0` - Terminal output formatting
-- `typer>=0.9.0` - CLI framework with Rich integration
-- `jsonschema>=4.17.0` - JSON schema validation
-- `pywin32>=306` - Windows long path support (Windows only)
-
-**Development Tools:**
-- `pytest>=7.0.0` - Testing framework
-- `pytest-cov>=4.0.0` - Test coverage reporting
-- `ruff>=0.1.0` - Fast Python linter and formatter
-- `pre-commit>=3.0.0` - Git hooks framework
-
-**Compatibility:**
-- Python: 3.8, 3.9, 3.10, 3.11, 3.12
-- Node.js: 14.0+, 16.0+, 18.0+, 20.0+
-- OS: Linux, macOS, Windows
-- Audio formats: MP3 (tagging), WAV (stems, analysis)
-
----
-
 ## Troubleshooting
 
 **Q: ImportError for mutagen/Pillow**  
@@ -544,10 +548,10 @@ A: Ensure cover art is 3000×3000 pixels, <5MB, JPG or PNG format
 A: Another workflow is running or stale lock file exists. Remove `.workflow.lock` if safe.
 
 **Q: Schema validation errors**  
-A: Schema validation is strict by default. Check `schemas/release_schema.json` for required fields. Set `strict_schema_validation: false` to allow warnings. Use `distrokid validate configs/release.json` for detailed validation with beautiful formatting.
+A: Schema validation is strict by default. Check `schemas/release_schema.json` for required fields. Set `strict_schema_validation: false` to allow warnings. Use `distrokid validate configs/release.json` for detailed validation.
 
 **Q: UTF-8 encoding errors**  
-A: The CLI now provides clear error messages for encoding issues. Open the file in a text editor (VS Code, Notepad++) and save it with UTF-8 encoding. The `validate` command also checks UTF-8 encoding automatically.
+A: The CLI provides clear error messages for encoding issues. Open the file in a text editor (VS Code, Notepad++) and save it with UTF-8 encoding. The `validate` command also checks UTF-8 encoding automatically.
 
 **Q: Windows long path errors**  
 A: Install `pywin32` for automatic long path support: `pip install pywin32`
@@ -569,8 +573,8 @@ For more troubleshooting, see `docs/QUICK_START.md` and `docs/WORKFLOW.md`.
 - DistroKid API integration for automated upload after file preparation
 
 **Recent Improvements:**
-- ✅ **Rich CLI Interface** - Beautiful Typer-based CLI with Rich formatting, enhanced error handling, and UTF-8 support
-- ✅ **Enhanced Error Messages** - All commands now feature beautiful panels with actionable troubleshooting steps
+- ✅ **Rich CLI Interface** - Typer-based CLI with Rich formatting, enhanced error handling, and UTF-8 support
+- ✅ **Enhanced Error Messages** - All commands feature Rich panels with actionable troubleshooting steps
 - ✅ **Log Filtering** - Automatic filtering of test-related entries for cleaner log output
 - ✅ Structured logging with rotating log files (`runtime/logs/` directory)
 - ✅ JSON schema validation for configuration files (`schemas/` directory)
