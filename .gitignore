@@ -265,6 +265,10 @@ Screenshots/*.jpeg
 Screenshots/*.pdf
 !Screenshots/.gitkeep
 
+# Assets screenshots - keep HTML exports for documentation
+assets/screenshots/*.html
+!assets/screenshots/.gitkeep
+
 # Metadata (keep templates, ignore generated)
 Metadata/*.json
 !Metadata/.gitkeep
