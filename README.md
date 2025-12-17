@@ -533,31 +533,31 @@ make test-integration  # Run integration tests only
 
 ## Screenshots
 
-The Rich CLI interface provides beautiful, colorized terminal output with panels, tables, and syntax highlighting. The following screenshots showcase key features:
+The Rich CLI interface provides beautiful, colorized terminal output with panels and progress indicators. The following screenshots showcase the pack workflow:
 
-### Status Dashboard
+### Pack Workflow - Start
 
-![Status Dashboard](assets/screenshots/status-dashboard.png)
+![Pack Workflow Start](assets/screenshots/pack-workflow-start.png)
 
-The `distrokid status` command displays dependency status, recent releases, disk space, and log files in formatted tables.
+The `distrokid pack` command starts processing with a clear status panel showing the configuration file being processed.
 
-### Configuration Viewer
+### Pack Workflow - Steps
 
-![Configuration Viewer](assets/screenshots/config-viewer.png)
+![Pack Workflow Steps](assets/screenshots/pack-workflow-steps.png)
 
-The `distrokid config show` command displays JSON configuration with Rich JSON formatting and syntax highlighting.
+The workflow shows progress through each step: validation, version extraction, file renaming, ID3 tagging, cover art validation, compliance checks, and metadata generation.
 
-### System Check
+### Pack Workflow - Success
 
-![System Check](assets/screenshots/system-check.png)
+![Pack Workflow Success](assets/screenshots/pack-workflow-success.png)
 
-The `distrokid check` command shows system requirements, dependencies, and health checks in organized tables with clear success indicators.
+Upon successful completion, a success panel displays the output directory structure with all generated files.
 
-### Error Messages
+### Dry Run Validation
 
-![Error Panel](assets/screenshots/error-panel.png)
+![Pack Dry Run](assets/screenshots/pack-dry-run.png)
 
-Rich-formatted error panels provide actionable troubleshooting steps with clear visual indicators.
+The `--dry-run` flag validates configuration without processing, showing a clean validation result panel.
 
 ---
 
