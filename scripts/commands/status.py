@@ -4,6 +4,7 @@ Status command - Show project status and health.
 
 import sys
 from pathlib import Path
+from typing import Tuple
 import typer
 from rich.console import Console
 from rich.table import Table
@@ -22,7 +23,7 @@ from rich_utils import console, print_success, print_warning, print_error
 app = typer.Typer(name="status", help="Show project status and health")
 
 
-def check_dependency(name: str, import_name: str = None) -> tuple[bool, str]:
+def check_dependency(name: str, import_name: str = None) -> Tuple[bool, str]:
     """Check if a dependency is installed."""
     if import_name is None:
         import_name = name

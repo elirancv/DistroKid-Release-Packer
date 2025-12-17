@@ -41,7 +41,6 @@ jobs:
       - name: Verify coverage file exists
         run: |
           python -c "import pathlib; f = pathlib.Path('coverage.xml'); exit(1) if not f.exists() else print(f'Coverage file exists: {f.stat().st_size} bytes')"
-        shell: bash
       
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5

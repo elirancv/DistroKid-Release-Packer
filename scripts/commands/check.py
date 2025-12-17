@@ -5,6 +5,7 @@ Check command - Verify system requirements.
 import sys
 import subprocess
 from pathlib import Path
+from typing import Tuple
 import typer
 from rich.console import Console
 from rich.table import Table
@@ -21,7 +22,7 @@ from rich_utils import console, print_success, print_warning, print_error
 app = typer.Typer(name="check", help="Check system requirements and dependencies")
 
 
-def check_python_version() -> tuple[bool, str]:
+def check_python_version() -> Tuple[bool, str]:
     """Check Python version."""
     import sys
     version = sys.version_info
@@ -33,7 +34,7 @@ def check_python_version() -> tuple[bool, str]:
         return False, version_str
 
 
-def check_dependency(name: str, import_name: str = None, required: bool = True) -> tuple[bool, str, str]:
+def check_dependency(name: str, import_name: str = None, required: bool = True) -> Tuple[bool, str, str]:
     """Check if a dependency is installed."""
     if import_name is None:
         import_name = name
@@ -46,7 +47,7 @@ def check_dependency(name: str, import_name: str = None, required: bool = True) 
         return False, "Not installed", status
 
 
-def check_ffmpeg() -> tuple[bool, str]:
+def check_ffmpeg() -> Tuple[bool, str]:
     """Check if ffmpeg is available."""
     try:
         result = subprocess.run(
@@ -64,7 +65,7 @@ def check_ffmpeg() -> tuple[bool, str]:
         return False, "Not found"
 
 
-def check_nodejs() -> tuple[bool, str]:
+def check_nodejs() -> Tuple[bool, str]:
     """Check if Node.js is available."""
     try:
         result = subprocess.run(
