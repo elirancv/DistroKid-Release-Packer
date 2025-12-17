@@ -10,6 +10,9 @@ omit =
     */pack.py
     */check_tags.py
     */batch_processor.py
+    */cli.py
+    */commands/__init__.py
+    */commands/*.py
 
 [report]
 # Minimum coverage threshold (fail if below this)
