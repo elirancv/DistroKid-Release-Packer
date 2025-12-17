@@ -34,6 +34,14 @@ jobs:
           pytest tests/ -v --cov=scripts --cov-report=term --cov-report=xml --cov-report=html
           # Fail if coverage is below threshold (enforced via .coveragerc)
       
+      - name: Verify coverage file exists
+        run: |
+          if [ ! -f coverage.xml ]; then
+            echo "Error: coverage.xml not found"
+            exit 1
+          fi
+          ls -lh coverage.xml
+      
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
@@ -42,4 +50,6 @@ jobs:
           verbose: true
           flags: unittests
           name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: elirancv/distrokid-release-packer
 

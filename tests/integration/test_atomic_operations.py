@@ -56,22 +56,39 @@ def test_file_appears_atomically(temp_source_dir, temp_dest_dir):
 
 def test_temp_file_cleanup_on_failure(temp_source_dir, temp_dest_dir):
     """Test that temp files are cleaned up on failure."""
+    import sys
     artist = "Test Artist"
     title = "Test Track"
     
-    # Make destination read-only to cause failure
-    temp_dest_dir.chmod(0o444)
-    
-    try:
-        with pytest.raises(Exception):
-            rename_audio_files(artist, title, str(temp_source_dir), str(temp_dest_dir))
+    # On Windows, chmod doesn't work the same way. Use a different approach:
+    # Create a file that already exists to trigger FileExistsError
+    if sys.platform == "win32":
+        # Create existing file to trigger overwrite error
+        existing_file = temp_dest_dir / f"{artist} - {title}.mp3"
+        existing_file.write_bytes(b"existing")
         
-        # Temp files should be cleaned up even on failure
-        temp_files = list(temp_dest_dir.glob("*.tmp"))
-        assert len(temp_files) == 0, f"Temp files should be cleaned up on failure: {temp_files}"
-    finally:
-        # Restore permissions for cleanup
-        temp_dest_dir.chmod(0o755)
+        try:
+            # Should raise FileExistsError (not overwrite by default)
+            with pytest.raises(FileExistsError):
+                rename_audio_files(artist, title, str(temp_source_dir), str(temp_dest_dir), overwrite=False)
+            
+            # Temp files should be cleaned up even on failure
+            temp_files = list(temp_dest_dir.glob("*.tmp"))
+            assert len(temp_files) == 0, f"Temp files should be cleaned up on failure: {temp_files}"
+        finally:
+            if existing_file.exists():
+                existing_file.unlink()
+    else:
+        # Unix: use chmod
+        temp_dest_dir.chmod(0o444)
+        try:
+            with pytest.raises(Exception):
+                rename_audio_files(artist, title, str(temp_source_dir), str(temp_dest_dir))
+            
+            temp_files = list(temp_dest_dir.glob("*.tmp"))
+            assert len(temp_files) == 0, f"Temp files should be cleaned up on failure: {temp_files}"
+        finally:
+            temp_dest_dir.chmod(0o755)
 
 
 def test_final_file_only_after_successful_write(temp_source_dir, temp_dest_dir):
@@ -96,26 +113,40 @@ def test_final_file_only_after_successful_write(temp_source_dir, temp_dest_dir):
 
 def test_no_partial_files_on_failure(temp_source_dir, temp_dest_dir):
     """Test that partial files don't remain on failure."""
+    import sys
     artist = "Test Artist"
     title = "Test Track"
     
     expected_file = temp_dest_dir / f"{artist} - {title}.mp3"
     
-    # Create a file that will cause permission error
-    temp_dest_dir.chmod(0o444)
-    
-    try:
-        with pytest.raises(Exception):
-            rename_audio_files(artist, title, str(temp_source_dir), str(temp_dest_dir))
+    # On Windows, use FileExistsError instead of chmod
+    if sys.platform == "win32":
+        # Create existing file to trigger error
+        existing_file = temp_dest_dir / f"{artist} - {title}.mp3"
+        existing_file.write_bytes(b"existing")
         
-        # Final file should not exist (operation failed)
-        assert not expected_file.exists(), "Final file should not exist after failure"
-        
-        # No temp files should remain
-        temp_files = list(temp_dest_dir.glob("*.tmp"))
-        assert len(temp_files) == 0, f"No temp files should remain: {temp_files}"
-    finally:
-        temp_dest_dir.chmod(0o755)
+        try:
+            with pytest.raises(FileExistsError):
+                rename_audio_files(artist, title, str(temp_source_dir), str(temp_dest_dir), overwrite=False)
+            
+            # Final file should still exist (the existing one), but no temp files
+            temp_files = list(temp_dest_dir.glob("*.tmp"))
+            assert len(temp_files) == 0, f"No temp files should remain: {temp_files}"
+        finally:
+            if existing_file.exists():
+                existing_file.unlink()
+    else:
+        # Unix: use chmod
+        temp_dest_dir.chmod(0o444)
+        try:
+            with pytest.raises(Exception):
+                rename_audio_files(artist, title, str(temp_source_dir), str(temp_dest_dir))
+            
+            assert not expected_file.exists(), "Final file should not exist after failure"
+            temp_files = list(temp_dest_dir.glob("*.tmp"))
+            assert len(temp_files) == 0, f"No temp files should remain: {temp_files}"
+        finally:
+            temp_dest_dir.chmod(0o755)
 
 
 def test_atomic_rename_preserves_file_content(temp_source_dir, temp_dest_dir):

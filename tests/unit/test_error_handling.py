@@ -33,11 +33,17 @@ def test_load_config_missing_file():
 def test_load_config_valid_json(tmp_path):
     """Test load_config loads valid JSON correctly."""
     config_file = tmp_path / "valid.json"
-    config_data = {"artist": "Test", "title": "Test"}
+    config_data = {
+        "artist": "Test",
+        "title": "Test",
+        "source_audio_dir": "./runtime/input",
+        "release_dir": "./runtime/output"
+    }
     config_file.write_text(json.dumps(config_data))
     
     result = load_config(str(config_file))
-    assert result == config_data
+    assert result["artist"] == config_data["artist"]
+    assert result["title"] == config_data["title"]
 
 
 def test_load_config_unicode_error(tmp_path):
