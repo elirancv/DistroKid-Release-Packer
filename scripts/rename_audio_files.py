@@ -32,12 +32,22 @@ def rename_audio_files(artist, title, source_dir, dest_dir, overwrite=False):
                 f"  To overwrite, set 'overwrite_existing: true' in release.json"
             )
 
-        shutil.copy2(file, dest_file)
-        print_success(f"Renamed: {new_name}")
+        # Atomic file operation: write to temp file first, then atomic rename
+        temp_file = dest_file.with_suffix(dest_file.suffix + '.tmp')
+        try:
+            shutil.copy2(file, temp_file)
+            # Atomic rename - file appears atomically at final location
+            temp_file.replace(dest_file)
+            print_success(f"Renamed: {new_name}")
+        except Exception:
+            # Cleanup temp file on failure
+            if temp_file.exists():
+                temp_file.unlink()
+            raise
 
 
 if __name__ == "__main__":
     # Usage
     rename_audio_files(
-        "Your Artist", "Your Title", "./exports", "./Releases/TrackName/Audio"
+        "Your Artist", "Your Title", "./runtime/input", "./runtime/output/TrackName/Audio"
     )

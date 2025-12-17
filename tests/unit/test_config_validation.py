@@ -5,12 +5,16 @@ Unit tests for configuration validation functions.
 import pytest
 from pathlib import Path
 import sys
+import tempfile
+import json
+from unittest.mock import patch, MagicMock
 
 # Add scripts to path
 scripts_dir = Path(__file__).parent.parent.parent / "scripts"
 sys.path.insert(0, str(scripts_dir))
 
 from orchestrator import validate_config
+from validate_config import validate_release_config
 
 
 def test_validate_config_missing_required():
@@ -81,4 +85,104 @@ def test_validate_config_invalid_boolean_type():
     config = {"artist": "Test", "title": "Test", "strict_mode": "true"}
     with pytest.raises(ValueError, match="must be bool"):
         validate_config(config)
+
+
+def test_basic_validation_when_jsonschema_missing():
+    """Test basic validation works when jsonschema is not installed."""
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        config_path = Path(f.name)
+        try:
+            # Create invalid config (missing required field)
+            json.dump({"title": "Test"}, f)
+            f.flush()
+            
+            # Mock jsonschema as unavailable
+            with patch('validate_config.JSONSCHEMA_AVAILABLE', False):
+                is_valid, errors = validate_release_config(config_path, strict=False)
+                
+                # Should catch missing required field via basic validation
+                assert not is_valid
+                assert any("source_audio_dir" in str(e).lower() or "required" in str(e).lower() for e in errors)
+        finally:
+            config_path.unlink()
+
+
+def test_basic_validation_catches_type_errors():
+    """Test basic validation catches type errors when jsonschema missing."""
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        config_path = Path(f.name)
+        try:
+            # Create config with wrong type
+            json.dump({
+                "title": "Test",
+                "source_audio_dir": "./input",
+                "release_dir": "./output",
+                "bpm": "not a number"  # Should be int/float
+            }, f)
+            f.flush()
+            
+            with patch('validate_config.JSONSCHEMA_AVAILABLE', False):
+                is_valid, errors = validate_release_config(config_path, strict=False)
+                
+                # Should catch type error
+                assert not is_valid
+                assert any("bpm" in str(e).lower() and "int" in str(e).lower() for e in errors)
+        finally:
+            config_path.unlink()
+
+
+def test_basic_validation_catches_empty_required_fields():
+    """Test basic validation catches empty required fields."""
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        config_path = Path(f.name)
+        try:
+            # Create config with empty required field
+            json.dump({
+                "title": "",  # Empty
+                "source_audio_dir": "./input",
+                "release_dir": "./output"
+            }, f)
+            f.flush()
+            
+            with patch('validate_config.JSONSCHEMA_AVAILABLE', False):
+                is_valid, errors = validate_release_config(config_path, strict=False)
+                
+                assert not is_valid
+                assert any("title" in str(e).lower() and "empty" in str(e).lower() for e in errors)
+        finally:
+            config_path.unlink()
+
+
+def test_strict_mode_raises_when_jsonschema_missing():
+    """Test strict mode raises error when jsonschema is missing."""
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        config_path = Path(f.name)
+        try:
+            json.dump({"title": "Test", "source_audio_dir": "./input", "release_dir": "./output"}, f)
+            f.flush()
+            
+            with patch('validate_config.JSONSCHEMA_AVAILABLE', False):
+                with pytest.raises(ValueError, match="jsonschema not installed"):
+                    validate_release_config(config_path, strict=True)
+        finally:
+            config_path.unlink()
+
+
+def test_basic_validation_warning_logged():
+    """Test that warning is logged when jsonschema is missing."""
+    import logging
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        config_path = Path(f.name)
+        try:
+            json.dump({"title": "Test", "source_audio_dir": "./input", "release_dir": "./output"}, f)
+            f.flush()
+            
+            with patch('validate_config.JSONSCHEMA_AVAILABLE', False):
+                with patch('validate_config.logger') as mock_logger:
+                    validate_release_config(config_path, strict=False)
+                    # Should log warning
+                    mock_logger.warning.assert_called()
+                    assert "jsonschema" in str(mock_logger.warning.call_args).lower()
+        finally:
+            config_path.unlink()
 

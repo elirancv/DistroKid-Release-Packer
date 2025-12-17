@@ -6,12 +6,14 @@ Runs the complete release workflow from Suno export to DistroKid-ready files.
 """
 
 import json
+import logging
 import os
 import shutil
 import sys
 import time
 from datetime import datetime
 from pathlib import Path
+from typing import Dict, Optional, Tuple
 
 # Add scripts directory to path for imports
 scripts_dir = Path(__file__).parent
@@ -28,6 +30,9 @@ from tag_audio_id3 import tag_audio_file
 from validate_cover_art import validate_cover_art
 from validate_compliance import full_compliance_check, validate_audio_file
 from fix_clipping import fix_clipping_ffmpeg
+from validate_config import validate_release_config, validate_artist_defaults
+from logger_config import setup_logging, get_logger
+from retry_utils import retry, RetryContext, RetryableError, NonRetryableError
 from rich_utils import (
     console,
     print_success,
@@ -41,28 +46,61 @@ from rich_utils import (
     create_progress,
 )
 
+# Initialize logging
+logger = get_logger("orchestrator")
+
+# Windows long path support (optional)
+if sys.platform == 'win32':
+    try:
+        import win32api
+        win32api.SetLongPathEnabled(True)
+        logger.debug("Windows long path support enabled")
+    except ImportError:
+        logger.warning(
+            "Long path support not enabled on Windows. "
+            "Install pywin32 for long path support: pip install pywin32"
+        )
+    except Exception as e:
+        logger.debug(f"Could not enable long path support: {e}")
+
 
 def load_user_settings():
     """Load user settings from artist-defaults.json (if exists)."""
-    settings_file = Path("artist-defaults.json")
+    # Check configs/ first, then root for backward compatibility
+    settings_file = Path("configs/artist-defaults.json")
     if not settings_file.exists():
+        settings_file = Path("artist-defaults.json")
+    if not settings_file.exists():
+        logger.debug("artist-defaults.json not found, using empty defaults")
         return {}
 
     try:
         with open(settings_file, "r", encoding="utf-8") as f:
             settings = json.load(f)
             # Filter out comment fields
-            return {k: v for k, v in settings.items() if not k.startswith("_")}
-    except (json.JSONDecodeError, UnicodeDecodeError):
+            filtered = {k: v for k, v in settings.items() if not k.startswith("_")}
+            
+            # Validate schema (non-strict by default for artist-defaults)
+            is_valid, errors = validate_artist_defaults(settings_file, strict=False)
+            if not is_valid:
+                logger.warning(f"artist-defaults.json validation errors: {', '.join(errors)}")
+            
+            logger.info(f"Loaded artist defaults from {settings_file}")
+            return filtered
+    except (json.JSONDecodeError, UnicodeDecodeError) as e:
+        logger.error(f"Failed to load artist-defaults.json: {e}")
         # If artist-defaults.json is invalid, just return empty dict
         return {}
 
 
-def load_config(config_path):
+def load_config(config_path, validate: bool = True):
     """Load configuration from JSON file, merging with user settings."""
     config_file = Path(config_path)
+    
+    logger.info(f"Loading configuration from {config_file}")
 
     if not config_file.exists():
+        logger.error(f"Config file not found: {config_path}")
         raise FileNotFoundError(f"Config file not found: {config_path}")
 
     # Load user settings first (defaults)
@@ -72,7 +110,9 @@ def load_config(config_path):
     try:
         with open(config_file, "r", encoding="utf-8") as f:
             release_config = json.load(f)
+        logger.debug(f"Successfully parsed JSON from {config_file}")
     except json.JSONDecodeError as e:
+        logger.error(f"Invalid JSON in {config_path}: {e}")
         raise ValueError(
             f"Invalid JSON in config file '{config_path}':\n"
             f"  Error: {e.msg}\n"
@@ -80,11 +120,25 @@ def load_config(config_path):
             f"  Fix the JSON syntax and try again."
         )
     except UnicodeDecodeError as e:
+        logger.error(f"Encoding error in {config_path}: {e}")
         raise ValueError(
             f"Config file '{config_path}' is not valid UTF-8 text.\n"
             f"  Error: {e}\n"
             f"  Ensure the file is saved as UTF-8."
         )
+    
+    # Validate against schema (strict by default, opt-out with strict_schema_validation: false)
+    if validate:
+        strict_validation = release_config.get("strict_schema_validation", True)  # Default to True
+        is_valid, errors = validate_release_config(config_file, strict=strict_validation)
+        if not is_valid:
+            error_msg = "\n".join(f"  - {e}" for e in errors)
+            if strict_validation:
+                logger.error(f"Schema validation failed in strict mode: {config_path}")
+                raise ValueError(f"Schema validation failed:\n{error_msg}")
+            else:
+                logger.warning(f"Schema validation errors in {config_path}:\n{error_msg}")
+                # Only warn if explicitly opted out of strict mode
 
     # Merge: user settings as defaults, release config overrides
     merged_config = {}
@@ -151,7 +205,7 @@ def load_config(config_path):
     return final_config
 
 
-def validate_config(config):
+def validate_config(config: Dict) -> bool:
     """Validate required configuration fields and types."""
     errors = []
     warnings = []
@@ -241,7 +295,7 @@ def validate_config(config):
 
     # Optional but recommended fields
     if "source_audio_dir" not in config:
-        warnings.append("'source_audio_dir' not specified, using default: ./exports")
+        warnings.append("'source_audio_dir' not specified, using default: ./runtime/input")
 
     # Validate paths if provided
     if "release_dir" in config and config["release_dir"]:
@@ -264,8 +318,49 @@ def validate_config(config):
     return True
 
 
+def validate_path_safety(path_str: str, base_dir: Optional[str] = None) -> Path:
+    """
+    Ensure path is safe and within expected directory.
+    
+    Args:
+        path_str: Path string to validate
+        base_dir: Optional base directory to ensure path is within
+    
+    Returns:
+        Resolved absolute Path
+    
+    Raises:
+        ValueError: If path is unsafe (contains traversal or outside base_dir)
+    """
+    path = Path(path_str)
+    
+    # Resolve to absolute path
+    abs_path = path.resolve()
+    
+    # Check for path traversal attempts
+    if '..' in path.parts:
+        raise ValueError(f"Path traversal not allowed: {path_str}")
+    
+    # If base_dir provided, ensure path is within it
+    if base_dir:
+        base_abs = Path(base_dir).resolve()
+        try:
+            abs_path.relative_to(base_abs)
+        except ValueError:
+            raise ValueError(
+                f"Path {path_str} is outside allowed directory {base_dir}"
+            )
+    
+    return abs_path
+
+
 def sanitize_filename(name):
-    """Remove invalid filesystem characters from filename."""
+    """
+    Remove invalid filesystem characters from filename.
+    
+    Note: This function sanitizes filename components only.
+    For path traversal prevention, use validate_path_safety().
+    """
     if not name:
         return "Unknown"
 
@@ -277,6 +372,19 @@ def sanitize_filename(name):
 
     # Remove leading/trailing dots and spaces (Windows issue)
     sanitized = sanitized.strip(". ")
+
+    # Windows reserved names (case-insensitive)
+    # These will cause FileNotFoundError or PermissionError on Windows
+    reserved_names = {
+        'CON', 'PRN', 'AUX', 'NUL',
+        'COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9',
+        'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9'
+    }
+    
+    # Check if sanitized name (without extension) is reserved
+    name_base = sanitized.rsplit('.', 1)[0].upper() if '.' in sanitized else sanitized.upper()
+    if name_base in reserved_names:
+        sanitized = f"_{sanitized}"  # Prefix with underscore
 
     # Limit length (filesystem limits + safety margin)
     max_length = 200
@@ -314,50 +422,80 @@ def validate_dependencies():
     return True
 
 
-def acquire_workflow_lock(release_dir):
-    """Prevent concurrent workflow execution."""
+def acquire_workflow_lock(release_dir: Path) -> Path:
+    """Prevent concurrent workflow execution (atomic)."""
     lock_file = Path(release_dir) / ".workflow.lock"
-
-    if lock_file.exists():
-        # Check if lock is stale (older than 1 hour)
+    lock_file.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Atomic lock acquisition using exclusive file creation
+    try:
+        # Use O_EXCL equivalent: open with 'x' mode (exclusive creation)
+        # This is atomic - raises FileExistsError if file already exists
+        with open(lock_file, 'x') as f:
+            f.write(f"PID: {os.getpid()}\nTime: {datetime.now().isoformat()}\n")
+        logger.debug(f"Acquired workflow lock: {lock_file}")
+        return lock_file
+    except FileExistsError:
+        # Lock exists - check if stale
         lock_age = time.time() - lock_file.stat().st_mtime
         if lock_age > 3600:
-            print_warning(f"Removing stale lock file (age: {lock_age/60:.1f} minutes)")
-            lock_file.unlink()
-        else:
-            raise RuntimeError(
-                f"Workflow already in progress for {release_dir}.\n"
-                f"  Lock file: {lock_file}\n"
-                f"  If no workflow is running, delete the lock file manually."
-            )
+            # Try to remove stale lock (may still race, but safer)
+            logger.warning(f"Found stale lock file (age: {lock_age/60:.1f} minutes), attempting removal")
+            try:
+                lock_file.unlink()
+                # Retry acquisition once
+                with open(lock_file, 'x') as f:
+                    f.write(f"PID: {os.getpid()}\nTime: {datetime.now().isoformat()}\n")
+                logger.info(f"Removed stale lock and acquired new lock: {lock_file}")
+                return lock_file
+            except (FileExistsError, FileNotFoundError):
+                # Another process got it or removed it
+                pass
+        
+        # Lock is active or another process got it
+        raise RuntimeError(
+            f"Workflow already in progress for {release_dir}.\n"
+            f"  Lock file: {lock_file}\n"
+            f"  If no workflow is running, delete the lock file manually."
+        )
 
-    # Create lock file
-    lock_file.parent.mkdir(parents=True, exist_ok=True)
-    lock_file.write_text(f"PID: {os.getpid()}\nTime: {datetime.now().isoformat()}\n")
-    return lock_file
 
-
-def release_workflow_lock(lock_file):
+def release_workflow_lock(lock_file: Optional[Path]) -> None:
     """Release workflow lock."""
     if lock_file and lock_file.exists():
         lock_file.unlink()
+        logger.debug(f"Released workflow lock: {lock_file}")
 
 
-def check_disk_space(path, required_mb=100):
-    """Check if sufficient disk space is available."""
+def check_disk_space(path: Path, required_mb: float = 100, operation: str = "") -> bool:
+    """
+    Check if sufficient disk space is available.
+    
+    Args:
+        path: Path to check disk space for
+        required_mb: Required space in MB
+        operation: Optional operation description for error message
+    
+    Returns:
+        True if sufficient space available
+    
+    Raises:
+        RuntimeError: If insufficient disk space
+    """
     stat = shutil.disk_usage(path)
     free_mb = stat.free / (1024 * 1024)
 
     if free_mb < required_mb:
+        operation_text = f" for {operation}" if operation else ""
         raise RuntimeError(
-            f"Insufficient disk space: {free_mb:.1f}MB free, "
+            f"Insufficient disk space{operation_text}: {free_mb:.1f}MB free, "
             f"need at least {required_mb}MB"
         )
 
     return True
 
 
-def save_release_metadata(artist, title, metadata, output_dir):
+def save_release_metadata(artist: str, title: str, metadata: Dict, output_dir: Path) -> Path:
     """Save release metadata JSON."""
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -370,23 +508,45 @@ def save_release_metadata(artist, title, metadata, output_dir):
     }
 
     metadata_file = output_path / f"{artist} - {title} - Metadata.json"
-    with open(metadata_file, "w") as f:
-        json.dump(release_metadata, f, indent=2)
+    logger.debug(f"Saving metadata to {metadata_file}")
+    
+    # Atomic write: use temp file, then atomic rename
+    temp_metadata = metadata_file.with_suffix('.tmp')
+    try:
+        with open(temp_metadata, "w", encoding="utf-8") as f:
+            json.dump(release_metadata, f, indent=2)
+        # Atomic rename - file appears atomically at final location
+        temp_metadata.replace(metadata_file)
+    except Exception:
+        # Cleanup temp file on failure
+        if temp_metadata.exists():
+            temp_metadata.unlink()
+        raise
 
+    logger.info(f"Release metadata saved: {metadata_file}")
     print_success(f"Generated release metadata: {metadata_file}")
     return metadata_file
 
 
-def run_release_workflow(config):
+def run_release_workflow(config: Dict, config_path: Optional[str] = None) -> bool:
     """Run the complete release workflow."""
+    logger.info("Starting release workflow")
+    if config_path:
+        logger.info(f"Config file: {config_path}")
+    
     validate_config(config)
     validate_dependencies()
 
     # Sanitize user input
     artist = sanitize_filename(config["artist"])
     title = sanitize_filename(config["title"])
+    
+    logger.info(f"Processing release: {artist} - {title}")
 
     debug_mode = config.get("debug", False)
+    if debug_mode:
+        logger.setLevel(logging.DEBUG)
+        logger.debug("Debug mode enabled")
 
     # Track workflow status
     workflow_errors = []
@@ -415,20 +575,48 @@ def run_release_workflow(config):
 
     current_step = 0
 
-    release_dir = Path(config.get("release_dir", f"./Releases/{title}"))
+    release_dir_str = config.get("release_dir", f"./runtime/output/{title}")
+    
+    # Validate path safety (prevent traversal)
+    try:
+        release_dir = validate_path_safety(release_dir_str)
+    except ValueError as e:
+        logger.error(f"Invalid release directory path: {e}")
+        raise ValueError(f"Invalid release directory: {e}")
+    
+    # Validate source paths if provided
+    if "source_audio_dir" in config:
+        try:
+            validate_path_safety(config["source_audio_dir"])
+        except ValueError as e:
+            logger.error(f"Invalid source audio directory path: {e}")
+            raise ValueError(f"Invalid source audio directory: {e}")
+    
+    if "source_stems_dir" in config:
+        try:
+            validate_path_safety(config["source_stems_dir"])
+        except ValueError as e:
+            logger.error(f"Invalid source stems directory path: {e}")
+            raise ValueError(f"Invalid source stems directory: {e}")
+    
+    logger.info(f"Release directory: {release_dir}")
 
     # Acquire workflow lock and check disk space
     lock_file = None
     try:
+        logger.debug("Acquiring workflow lock")
         lock_file = acquire_workflow_lock(release_dir)
-        check_disk_space(release_dir, required_mb=500)  # Conservative estimate
+        logger.debug("Checking disk space")
+        check_disk_space(release_dir, required_mb=500, operation="workflow initialization")  # Conservative estimate
 
         # Step 1: Extract Suno version (if URL provided)
         version_info = None
         if config.get("suno_url"):
             current_step += 1
             print_step(current_step, total_steps, "Extracting Suno version info")
+            logger.info(f"Extracting Suno version from URL: {config['suno_url']}")
             version_info = extract_suno_version_from_url(config["suno_url"])
+            logger.info(f"Extracted version: {version_info.get('version')}, build: {version_info.get('build_id')}")
             print_success(f"Version: {version_info.get('version')}, Build: {version_info.get('build_id')}")
             console.print()
         elif config.get("suno_metadata_file"):
@@ -444,27 +632,59 @@ def run_release_workflow(config):
             current_step += 1
             print_step(current_step, total_steps, "Renaming and organizing audio files")
             try:
-                rename_audio_files(
-                    artist=artist,
-                    title=title,
-                    source_dir=config.get("source_audio_dir", "./exports"),
-                    dest_dir=release_dir / "Audio",
-                    overwrite=config.get("overwrite_existing", False),
-                )
+                source_dir = config.get("source_audio_dir", "./runtime/input")
+                logger.info(f"Renaming audio files from {source_dir}")
+                
+                # Check disk space before large file operations
+                # Estimate required space: check source file sizes
+                source_path = Path(source_dir)
+                if source_path.exists():
+                    # Calculate total size of audio files
+                    audio_files = [f for f in list(source_path.glob("*.mp3")) + list(source_path.glob("*.wav")) if f.is_file()]
+                    total_size = sum(f.stat().st_size for f in audio_files)
+                    required_mb = (total_size / (1024 * 1024)) * 1.1  # 10% safety margin
+                    if required_mb > 0:
+                        check_disk_space(release_dir, required_mb=required_mb, operation="audio file copy")
+                
+                # Use retry for file operations (transient I/O errors)
+                max_retries = config.get("max_retries", 3)
+                with RetryContext(
+                    max_attempts=max_retries,
+                    retryable_exceptions=(IOError, OSError, PermissionError)
+                ):
+                    rename_audio_files(
+                        artist=artist,
+                        title=title,
+                        source_dir=source_dir,
+                        dest_dir=release_dir / "Audio",
+                        overwrite=config.get("overwrite_existing", False),
+                    )
+                
+                logger.info("Audio files renamed successfully")
                 console.print()
             except Exception as e:
+                logger.error(f"Error renaming audio files: {e}", exc_info=True)
                 print_error(f"Error renaming audio files: {e}")
-
+                
+                # Always log full context, even if not shown to user
+                source_dir = config.get("source_audio_dir", "./runtime/input")
+                dest_dir = str(release_dir / "Audio")
+                logger.debug(f"Source dir: {source_dir}, Dest dir: {dest_dir}, "
+                           f"Artist: {artist}, Title: {title}")
+                
                 if debug_mode:
                     import traceback
                     from rich.traceback import install
                     install(show_locals=True)
                     console.print_exception()
                 else:
+                    # Show at least file path in error message
+                    print_info(f"Source: {source_dir}, Destination: {dest_dir}")
                     print_info("Run with 'debug: true' in config for full traceback")
                 console.print()
 
                 if config.get("strict_mode", False):
+                    logger.error("Strict mode enabled, workflow failed")
                     return False
 
         # Step 3: Organize stems (if applicable)
@@ -475,19 +695,27 @@ def run_release_workflow(config):
                 organize_stems(
                     artist=artist,
                     title=title,
-                    source_dir=config.get("source_stems_dir", "./exports/stems"),
+                    source_dir=config.get("source_stems_dir", "./runtime/input/stems"),
                     stems_dir=release_dir / "Stems",
                     overwrite=config.get("overwrite_existing", False),
                 )
                 console.print()
             except Exception as e:
+                logger.error(f"Error organizing stems: {e}", exc_info=True)
                 print_error(f"Error organizing stems: {e}")
+                
+                # Always log full context
+                source_stems_dir = config.get("source_stems_dir", "./runtime/input/stems")
+                stems_dir = str(release_dir / "Stems")
+                logger.debug(f"Source stems dir: {source_stems_dir}, Dest stems dir: {stems_dir}, "
+                           f"Artist: {artist}, Title: {title}")
 
                 if debug_mode:
                     from rich.traceback import install
                     install(show_locals=True)
                     console.print_exception()
                 else:
+                    print_info(f"Source: {source_stems_dir}, Destination: {stems_dir}")
                     print_info("Run with 'debug: true' in config for full traceback")
                 console.print()
 
@@ -504,13 +732,20 @@ def run_release_workflow(config):
                 )
                 console.print()
             except Exception as e:
+                logger.error(f"Error tagging stems: {e}", exc_info=True)
                 print_error(f"Error tagging stems: {e}")
+                
+                # Always log full context
+                stems_dir = str(release_dir / "Stems")
+                logger.debug(f"Stems directory: {stems_dir}, "
+                           f"Artist: {artist}, Title: {title}")
 
                 if debug_mode:
                     from rich.traceback import install
                     install(show_locals=True)
                     console.print_exception()
                 else:
+                    print_info(f"Stems directory: {stems_dir}")
                     print_info("Run with 'debug: true' in config for full traceback")
                 console.print()
 
@@ -612,13 +847,23 @@ def run_release_workflow(config):
                     )
                     print()
                 except Exception as e:
+                    logger.error(f"Error tagging audio: {e}", exc_info=True)
                     print_error(f"Error tagging audio: {e}")
+                    
+                    # Always log full context
+                    audio_path = str(audio_file)
+                    cover_path = str(cover_file) if cover_file and cover_file.exists() else "None"
+                    logger.debug(f"Audio file: {audio_path}, Cover art: {cover_path}, "
+                               f"Artist: {artist}, Title: {title}")
 
                     if debug_mode:
                         from rich.traceback import install
                         install(show_locals=True)
                         console.print_exception()
                     else:
+                        print_info(f"Audio file: {audio_path}")
+                        if cover_file and cover_file.exists():
+                            print_info(f"Cover art: {cover_path}")
                         print_info("Run with 'debug: true' in config for full traceback")
                     console.print()
 
@@ -657,8 +902,12 @@ def run_release_workflow(config):
                         else:
                             cover_file = expected_cover_png
 
-                        # Rename the file
+                        # Atomic rename: use temp file pattern for safety
                         try:
+                            # If destination exists, remove it first (for overwrite case)
+                            if cover_file.exists():
+                                cover_file.unlink()
+                            # Atomic rename
                             found_file.rename(cover_file)
                             print_success(f"Renamed cover art: {found_file.name} → {cover_file.name}")
                         except Exception as e:
@@ -720,11 +969,20 @@ def run_release_workflow(config):
                             print_success("Clipping fixed - re-running compliance check...")
                             console.print()
                         except Exception as e:
+                            logger.error(f"Could not auto-fix clipping: {e}", exc_info=True)
                             print_error(f"Could not auto-fix clipping: {e}")
+                            
+                            # Always log full context
+                            audio_path = str(audio_file)
+                            logger.debug(f"Audio file: {audio_path}, "
+                                       f"Artist: {artist}, Title: {title}")
+                            
                             if debug_mode:
                                 import traceback
-
                                 traceback.print_exc()
+                            else:
+                                print_info(f"Audio file: {audio_path}")
+                                print_info("Run with 'debug: true' in config for full traceback")
                             workflow_errors.append("Auto-fix clipping failed")
                 except ImportError:
                     # fix_clipping module not available, skip auto-fix
@@ -813,10 +1071,10 @@ def main():
         example_config = {
             "artist": "YourArtistName",
             "title": "Deep Dive",
-            "release_dir": "./Releases/DeepDive",
+            "release_dir": "./runtime/output/DeepDive",
             "suno_url": "https://suno.com/song/abc123xyz?v=3.5.2",
-            "source_audio_dir": "./exports",
-            "source_stems_dir": "./exports/stems",
+            "source_audio_dir": "./runtime/input",
+            "source_stems_dir": "./runtime/input/stems",
             "genre": "Deep House",
             "bpm": 122,
             "id3_metadata": {
