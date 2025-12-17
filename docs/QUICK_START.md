@@ -32,7 +32,7 @@ npm install
 
 1. **Create a config file:**
 
-Copy `release.example.json` to `release.json` and edit:
+Copy `configs/release.example.json` to `configs/release.json` and edit:
 
 ```json
 {
@@ -57,10 +57,10 @@ make run
 **Or directly:**
 ```bash
 # Python (Recommended)
-python pack.py release.json
+python scripts/pack.py configs/release.json
 
 # JavaScript
-node pack.js release.json
+node scripts/pack.js configs/release.json
 ```
 
 **See all commands:**
@@ -109,7 +109,7 @@ python scripts/validate_compliance.py
 After running, your files will be organized like this:
 
 ```
-Releases/YourTrack/
+runtime/output/YourTrack/
 ├── Audio/
 │   └── Artist - Title.mp3
 ├── Stems/
@@ -133,8 +133,8 @@ from scripts.rename_audio_files import rename_audio_files
 rename_audio_files(
     artist="Your Artist",
     title="Your Title",
-    source_dir="./exports",
-    dest_dir="./Releases/YourTitle/Audio"
+    source_dir="./runtime/input",
+    dest_dir="./runtime/output/YourTitle/Audio"
 )
 ```
 
@@ -185,8 +185,8 @@ npm install
 ### Files not found
 
 - Check that source directories exist
-- Verify file paths in release.json
-- Ensure audio files are in the source directory
+- Verify file paths in configs/release.json
+- Ensure audio files are in the source directory (default: `runtime/input/`)
 
 ### Validation failures
 
@@ -203,12 +203,12 @@ If you get validation errors:
 - Check that `artist` and `title` fields are present and not empty
 - Verify field types (bpm must be number, boolean fields must be true/false)
 - Check for invalid characters in artist/title (they'll be sanitized automatically)
-- Use `debug: true` in release.json for detailed error messages
+- Use `debug: true` in configs/release.json for detailed error messages
 
 ### File overwrite errors
 
 If you get "File already exists" errors:
-- Set `overwrite_existing: true` in release.json to allow overwriting
+- Set `overwrite_existing: true` in configs/release.json to allow overwriting
 - Or manually delete existing files in the release directory
 
 ### Debug mode
@@ -224,7 +224,7 @@ This will show full tracebacks for any errors, making troubleshooting easier.
 
 ## Next Steps
 
-1. Review generated files in `Releases/` directory
+1. Review generated files in `runtime/output/` directory
 2. Verify metadata in JSON files
 3. Upload to DistroKid
 4. Track analytics (see Section 8 in main documentation)

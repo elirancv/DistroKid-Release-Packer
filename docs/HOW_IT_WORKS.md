@@ -17,19 +17,19 @@ This is the **orchestrator** - it runs the complete workflow automatically.
 You run it from your terminal like this:
 
 ```bash
-python scripts/orchestrator.py release.json
+python scripts/orchestrator.py configs/release.json
 ```
 
 ### 2. **Workflow Process**
 
 ```
 ┌─────────────────────────────────────────────────┐
-│  You: Create release.json with track details     │
+│  You: Create configs/release.json with track details     │
 └─────────────────┬───────────────────────────────┘
                   │
                   ▼
 ┌─────────────────────────────────────────────────┐
-│  You: Run orchestrator.py release.json          │
+│  You: Run orchestrator.py configs/release.json          │
 └─────────────────┬───────────────────────────────┘
                   │
                   ▼
@@ -63,20 +63,20 @@ python scripts/orchestrator.py release.json
 
 ### 3. **Input: Configuration File**
 
-You create a `release.json` file that tells the tool:
+You create a `configs/release.json` file that tells the tool:
 - Artist name
 - Track title
 - Suno URL (to extract version info)
 - Where your source files are
 - What metadata to use
 
-**Example release.json:**
+**Example configs/release.json:**
 ```json
 {
   "artist": "YourArtistName",
   "title": "Deep Dive",
   "suno_url": "https://suno.com/song/abc123xyz",
-  "source_audio_dir": "./exports",
+  "source_audio_dir": "./runtime/input",
   "genre": "Deep House"
 }
 ```
@@ -85,7 +85,7 @@ You create a `release.json` file that tells the tool:
 
 After running, you get:
 ```
-Releases/DeepDive/
+runtime/output/DeepDive/
 ├── Audio/
 │   └── YourArtistName - Deep Dive .mp3  ← Tagged, ready
 ├── Cover/
@@ -101,12 +101,12 @@ Releases/DeepDive/
 ### Basic Usage (One Command)
 
 ```bash
-# 1. Create release.json (copy from example)
-cp release.example.json release.json
-# Edit release.json with your details
+# 1. Create configs/release.json (copy from example)
+cp configs/release.example.json configs/release.json
+# Edit configs/release.json with your details
 
 # 2. Run the tool
-python scripts/orchestrator.py release.json
+python scripts/orchestrator.py configs/release.json
 ```
 
 ### What Happens When You Run It
@@ -137,7 +137,7 @@ python scripts/orchestrator.py release.json
 ✓ Generated release metadata: Metadata/YourArtistName - Deep Dive - Metadata.json
 
 🎉 Workflow completed successfully!
-📦 Release files ready in: ./Releases/DeepDive
+📦 Release files ready in: ./runtime/output/DeepDive
 ```
 
 **Note:** The workflow now includes automatic validation, dependency checking, file locking, and disk space checks before processing begins. If any validation fails, you'll get clear error messages explaining what's wrong.
@@ -169,7 +169,7 @@ But the orchestrator is easier - it does everything in one command.
 
 ## Think of It Like...
 
-- **Like a recipe** - You provide ingredients (release.json), it follows steps automatically
+- **Like a recipe** - You provide ingredients (configs/release.json), it follows steps automatically
 - **Like a factory** - Input raw files → Output organized, tagged, validated files
 - **Like a checklist** - But automated, so you don't have to do each step manually
 
@@ -182,13 +182,13 @@ But the orchestrator is easier - it does everything in one command.
 
 2. **Configure:**
    ```bash
-   cp release.example.json release.json
-   # Edit release.json
+   cp configs/release.example.json configs/release.json
+   # Edit configs/release.json
    ```
 
 3. **Run:**
    ```bash
-   python scripts/orchestrator.py release.json
+   python scripts/orchestrator.py configs/release.json
    ```
 
 That's it! Your files are ready for DistroKid upload.

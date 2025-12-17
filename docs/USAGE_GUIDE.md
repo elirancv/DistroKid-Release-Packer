@@ -6,7 +6,7 @@ This is a **Command-Line Tool (CLI)** - you run it from your terminal/command pr
 
 ## Main Entry Point
 
-**The main file is:** `pack.py` (Python) or `pack.js` (JavaScript)
+**The main file is:** `scripts/pack.py` (Python) or `scripts/pack.js` (JavaScript)
 
 This is the **simplest way** to use the tool.
 
@@ -22,23 +22,23 @@ pip install -r requirements.txt
 
 ```bash
 # Copy the example
-cp release.example.json release.json
+cp configs/release.example.json configs/release.json
 
-# Edit release.json with your track details
+# Edit configs/release.json with your track details
 # (Use any text editor)
 ```
 
 ### Step 3: Run
 
 ```bash
-python pack.py release.json
+python scripts/pack.py configs/release.json
 ```
 
 **That's it!** The tool does everything automatically.
 
 ## What It Does
 
-When you run `python pack.py release.json`, it:
+When you run `python scripts/pack.py configs/release.json`, it:
 
 1. ✅ Validates your configuration (required fields, types, values)
 2. ✅ Checks dependencies (mutagen, Pillow) - fails fast if missing
@@ -54,19 +54,19 @@ When you run `python pack.py release.json`, it:
 12. ✅ Creates metadata JSON files
 13. ✅ Releases workflow lock
 
-**Output:** Ready-to-upload files in `Releases/YourTrack/`
+**Output:** Ready-to-upload files in `runtime/output/YourTrack/`
 
 ## Command Reference
 
 ```bash
 # Main command - run the workflow
-python pack.py release.json
+python scripts/pack.py configs/release.json
 
 # Show help
-python pack.py --help
+python scripts/pack.py --help
 
 # Show example config
-python pack.py --example
+python scripts/pack.py --example
 ```
 
 ## Example Session
@@ -78,12 +78,12 @@ Collecting mutagen...
 Successfully installed mutagen-1.47.0 Pillow-10.0.0
 
 # 2. Create config
-$ cp release.example.json release.json
-$ nano release.json  # Edit with your details
+$ cp configs/release.example.json configs/release.json
+$ nano configs/release.json  # Edit with your details
 
 # 3. Run the tool
-$ python pack.py release.json
-📋 Loading config: release.json
+$ python scripts/pack.py configs/release.json
+📋 Loading config: configs/release.json
 
 🚀 Starting DistroKid Release Packer Workflow
 
@@ -100,7 +100,7 @@ $ python pack.py release.json
 ✓ ALL CHECKS PASSED - Ready for upload!
 
 🎉 Workflow completed successfully!
-📦 Release files ready in: ./Releases/DeepDive
+📦 Release files ready in: ./runtime/output/DeepDive
 
 ✅ Success! Your release is ready for DistroKid upload.
 ```
@@ -108,7 +108,7 @@ $ python pack.py release.json
 ## File Structure After Running
 
 ```
-Releases/
+runtime/output/
 └── DeepDive/
     ├── Audio/
     │   └── YourArtistName - Deep Dive .mp3  ← Ready to upload
@@ -136,12 +136,12 @@ python scripts/tag_audio_id3.py
 python scripts/validate_compliance.py
 ```
 
-But `pack.py` is easier - it does everything at once.
+But `scripts/pack.py` is easier - it does everything at once.
 
 ## Troubleshooting
 
 ### "Config file not found"
-- Make sure you created `release.json` from `release.example.json`
+- Make sure you created `configs/release.json` from `configs/release.example.json`
 - Check the file path is correct
 
 ### "Module not found"
@@ -149,7 +149,8 @@ But `pack.py` is easier - it does everything at once.
 
 ### "File not found" errors
 - Check that your source directories exist
-- Verify paths in release.json are correct
+- Verify paths in configs/release.json are correct
+- Default source directory is `runtime/input/`
 
 ## More Information
 

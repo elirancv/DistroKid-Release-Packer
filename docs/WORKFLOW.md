@@ -13,7 +13,7 @@ A comprehensive, step-by-step reusable checklist for preparing and distributing 
 - [ ] DistroKid account funded (Musician plan or higher)
 - [ ] Folder structure ready for your release:
   ```
-  /Releases/TrackName/
+  runtime/output/TrackName/
   ├─ Audio/
   ├─ Stems/
   ├─ Cover/
@@ -294,7 +294,7 @@ Stems are individual tracks of a song, exported separately so you can mix, remix
 
 ### Organizing Stems
 
-- [ ] Place all stems in `/Releases/TrackName/Stems/` folder
+- [ ] Place all stems in `runtime/output/TrackName/Stems/` folder
 - [ ] Maintain consistent naming across all releases
 - [ ] **Stems Validation Checklist:**
   - [ ] All stems are same sample rate (44.1kHz or 48kHz)
@@ -395,7 +395,7 @@ def organize_stems(artist, title, source_dir, stems_dir):
     return stems_data
 
 # Usage
-organize_stems("YourArtistName", "Deep Dive", "./exports/stems", "./Releases/DeepDive/Stems")
+organize_stems("YourArtistName", "Deep Dive", "./runtime/input/stems", "./runtime/output/DeepDive/Stems")
 ```
 </details>
 
@@ -459,7 +459,7 @@ function organizeStems(artist, title, sourceDir, stemsDir) {
 }
 
 // Usage
-organizeStems('YourArtistName', 'Deep Dive', './exports/stems', './Releases/DeepDive/Stems');
+organizeStems('YourArtistName', 'Deep Dive', './runtime/input/stems', './runtime/output/DeepDive/Stems');
 ```
 </details>
 
@@ -602,7 +602,7 @@ function batchTagStems(stemsDir, artist, title) {
 }
 
 // Usage
-// batchTagStems('./Releases/DeepDive/Stems', 'YourArtistName', 'Deep Dive');
+// batchTagStems('./runtime/output/DeepDive/Stems', 'YourArtistName', 'Deep Dive');
 ```
 
 **Note:** WAV files have limited ID3 support. Consider:
@@ -752,7 +752,7 @@ tag_audio_file(
 )
 
 # Batch tagging
-# batch_tag_files("./exports", "./Releases/DeepDive/Audio", "cover.jpg", metadata)
+# batch_tag_files("./runtime/input", "./runtime/output/DeepDive/Audio", "cover.jpg", metadata)
 ```
 </details>
 
@@ -976,7 +976,7 @@ def validate_cover_art(image_path):
     return all(checks.values())
 
 # Usage
-validate_cover_art("./Releases/TrackName/Cover/cover.jpg")
+validate_cover_art("./runtime/output/TrackName/Cover/cover.jpg")
 ```
 </details>
 
@@ -1624,12 +1624,12 @@ Use the orchestrator script to run the entire workflow automatically:
 
 **Python:**
 ```bash
-python scripts/orchestrator.py release.json
+python scripts/orchestrator.py configs/release.json
 ```
 
 **JavaScript:**
 ```bash
-node scripts/orchestrator.js release.json
+node scripts/orchestrator.js configs/release.json
 ```
 
 See [QUICK_START.md](QUICK_START.md) and [scripts/README.md](../scripts/README.md) for details.
