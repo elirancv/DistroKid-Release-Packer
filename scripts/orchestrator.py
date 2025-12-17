@@ -87,9 +87,14 @@ def load_user_settings():
             
             logger.info(f"Loaded artist defaults from {settings_file}")
             return filtered
-    except (json.JSONDecodeError, UnicodeDecodeError) as e:
-        logger.error(f"Failed to load artist-defaults.json: {e}")
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to load artist-defaults.json (invalid JSON): {e}")
         # If artist-defaults.json is invalid, just return empty dict
+        return {}
+    except UnicodeDecodeError as e:
+        logger.error(f"Failed to load artist-defaults.json (encoding error): {e}")
+        # If artist-defaults.json has encoding issues, just return empty dict
+        # The error will be caught when loading the release config if needed
         return {}
 
 
@@ -121,11 +126,18 @@ def load_config(config_path, validate: bool = True):
         )
     except UnicodeDecodeError as e:
         logger.error(f"Encoding error in {config_path}: {e}")
-        raise ValueError(
-            f"Config file '{config_path}' is not valid UTF-8 text.\n"
-            f"  Error: {e}\n"
-            f"  Ensure the file is saved as UTF-8."
+        # Provide a more helpful error message
+        error_msg = (
+            f"❌ [bold red]Encoding Error[/bold red]\n\n"
+            f"Config file '[yellow]{config_path}[/yellow]' is not valid UTF-8 text.\n\n"
+            f"[dim]Error details:[/dim] {e}\n\n"
+            f"[bold]Solution:[/bold]\n"
+            f"  • Open the file in a text editor (VS Code, Notepad++)\n"
+            f"  • Save it with UTF-8 encoding (File → Save As → Encoding: UTF-8)\n"
+            f"  • Ensure no binary data or special characters are corrupted\n"
+            f"  • If the file was copied, ensure it was copied as text, not binary"
         )
+        raise ValueError(error_msg)
     
     # Validate against schema (strict by default, opt-out with strict_schema_validation: false)
     if validate:

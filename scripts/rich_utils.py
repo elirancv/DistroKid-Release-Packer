@@ -13,28 +13,28 @@ from rich.table import Table
 from rich.markdown import Markdown
 from rich import box
 
-# Global console instance
-console = Console()
+# Global console instance with forced colors for maximum vibrancy
+console = Console(force_terminal=True, color_system="truecolor")
 
 
 def print_success(message: str):
-    """Print a success message."""
-    console.print(f"[bold green][OK][/bold green] {message}")
+    """Print a success message with vibrant colors."""
+    console.print(f"[bold green on black]✓[/bold green on black] [bold green]{message}[/bold green]")
 
 
 def print_error(message: str):
-    """Print an error message."""
-    console.print(f"[bold red][ERROR][/bold red] {message}")
+    """Print an error message with vibrant colors."""
+    console.print(f"[bold red on black]✗[/bold red on black] [bold red]{message}[/bold red]")
 
 
 def print_warning(message: str):
-    """Print a warning message."""
-    console.print(f"[bold yellow][WARN][/bold yellow] {message}")
+    """Print a warning message with vibrant colors."""
+    console.print(f"[bold yellow on black]⚠[/bold yellow on black] [bold yellow]{message}[/bold yellow]")
 
 
 def print_info(message: str):
-    """Print an info message."""
-    console.print(f"[bold blue][INFO][/bold blue] {message}")
+    """Print an info message with vibrant colors."""
+    console.print(f"[bold cyan on black]ℹ[/bold cyan on black] [bold cyan]{message}[/bold cyan]")
 
 
 def print_step(step_num: int, total_steps: int, message: str, icon: str = None):

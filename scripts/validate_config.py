@@ -248,8 +248,11 @@ def validate_artist_defaults(config_path: Path, strict: bool = False) -> Tuple[b
         except IOError as e:
             return False, [f"Cannot read file: {e}"]
         
+        # Filter out comment fields before validation
+        config_filtered = {k: v for k, v in config.items() if not k.startswith("_")}
+        
         # Perform basic validation
-        is_valid, errors = _basic_validation_artist_defaults(config)
+        is_valid, errors = _basic_validation_artist_defaults(config_filtered)
         return is_valid, errors
     
     errors = []
@@ -276,10 +279,14 @@ def validate_artist_defaults(config_path: Path, strict: bool = False) -> Tuple[b
             raise ValueError(error_msg) from e
         return False, [error_msg]
     
+    # Filter out comment fields (starting with _) before validation
+    # These are documentation fields and should not be validated
+    config_filtered = {k: v for k, v in config.items() if not k.startswith("_")}
+    
     # Validate
     try:
         validator = Draft7Validator(schema)
-        errors_list = list(validator.iter_errors(config))
+        errors_list = list(validator.iter_errors(config_filtered))
         
         if errors_list:
             for error in errors_list:

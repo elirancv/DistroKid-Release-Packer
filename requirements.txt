@@ -21,6 +21,9 @@ soundfile>=0.12.0
 # Terminal output and formatting
 rich>=13.0.0
 
+# CLI framework with Rich integration
+typer>=0.9.0
+
 # JSON schema validation
 jsonschema>=4.17.0
 

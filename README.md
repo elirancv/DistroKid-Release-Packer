@@ -35,6 +35,7 @@
 
 **Core Capabilities:**
 - ✅ **Automated Workflow** - Complete Suno → DistroKid pipeline automation
+- ✅ **Rich CLI Interface** - Beautiful, production-ready CLI with Typer and Rich formatting
 - ✅ **ID3v2 Tagging** - Full metadata embedding with cover art support
 - ✅ **Compliance Validation** - DistroKid requirements checking (dimensions, file size, audio specs)
 - ✅ **Batch Processing** - Process multiple releases in a single run with `--batch` flag
@@ -43,6 +44,7 @@
 - ✅ **Concurrency Safety** - Lock file mechanism prevents concurrent execution conflicts
 - ✅ **Structured Logging** - Rotating log files with detailed context (10MB max, 5 backups)
 - ✅ **Error Recovery** - Retry mechanisms with exponential backoff for transient failures
+- ✅ **Enhanced Error Handling** - Beautiful error messages with actionable solutions and UTF-8 support
 - ✅ **Windows Support** - Long path support via pywin32 and reserved filename handling
 
 **Production-Ready:**
@@ -66,11 +68,15 @@
 # Install dependencies
 make setup
 
+# Initialize project (creates directories and configs)
+distrokid init
+
 # Edit configs/release.json with your track details
 # Place audio files in runtime/input/ directory
 
 # Run workflow
-make run
+distrokid pack configs/release.json
+# Or use legacy: make run
 ```
 
 **Expected output:**
@@ -152,18 +158,61 @@ python -c "import mutagen, PIL, librosa; print('Dependencies OK')"
 
 ### CLI Commands
 
-**Primary entry point:**
+**Rich CLI (Recommended) - Beautiful, Production-Ready Interface:**
 ```bash
-python scripts/pack.py configs/release.json
+# After installation, use the 'distrokid' command
+distrokid --help                    # Show help
+distrokid --version                 # Show version with beautiful formatting
+
+# Process releases
+distrokid pack configs/release.json              # Process single release
+distrokid pack configs/release.json --dry-run    # Validate only
+distrokid pack configs/release.json --debug       # Enable debug mode
+distrokid batch ./releases                       # Process all releases in directory
+distrokid batch ./releases --continue-on-error   # Continue on errors
+
+# Configuration management
+distrokid config list                            # List all config files
+distrokid config show configs/release.json      # View config with Rich JSON formatting
+distrokid config create release                  # Create new release config from example
+distrokid config create artist-defaults         # Create artist defaults config
+distrokid config edit configs/release.json      # Open config in editor
+
+# Validation and checks
+distrokid validate configs/release.json          # Validate configuration (with UTF-8 checks)
+distrokid validate configs/release.json --no-strict  # Non-strict validation
+distrokid check                                  # Check system requirements and dependencies
+distrokid status                                 # Show project status and health
+
+# Log management (with test filtering)
+distrokid logs list                              # List log files
+distrokid logs view                              # View most recent log (filtered)
+distrokid logs view release_packer_20251217.log  # View specific log
+distrokid logs view --follow                     # Follow log in real-time
+distrokid logs tail --lines 50                   # Show last 50 lines
+distrokid logs clear --older-than 30            # Clear logs older than 30 days
+distrokid logs clear --dry-run                  # Preview what would be deleted
+
+# Project initialization
+distrokid init                                   # Initialize project structure
+distrokid init --force                           # Overwrite existing files
 ```
 
-**Available commands:**
+**CLI Features:**
+- 🎨 **Beautiful Rich Formatting** - Colorful panels, tables, and syntax highlighting
+- ❌ **Enhanced Error Handling** - Clear error messages with actionable solutions
+- 🔤 **UTF-8 Support** - Automatic encoding detection and helpful error messages
+- 🧹 **Clean Logs** - Automatic filtering of test-related entries
+- 📊 **Status Reporting** - Beautiful status panels with success/failure counts
+- 🎯 **Production-Ready** - Comprehensive error handling and graceful failures
+
+**Legacy CLI (Still supported):**
 ```bash
-python scripts/pack.py <configs/release.json>        # Process single release
-python scripts/pack.py --batch <directory>            # Process all releases in directory
-python scripts/pack.py --batch <dir> --dry-run        # Validate configs only (no processing)
-python scripts/pack.py --help                         # Show help
-python scripts/pack.py --example                      # Show example config
+python scripts/pack.py configs/release.json        # Process single release
+python scripts/pack.py --batch <directory>          # Process all releases in directory
+python scripts/pack.py --batch <dir> --dry-run      # Validate configs only (no processing)
+python scripts/pack.py --help                       # Show help
+python scripts/pack.py --example                    # Show example config
 ```
 
 ### Programmatic Usage
@@ -459,6 +508,7 @@ make test-integration  # Run integration tests only
 - `librosa>=0.10.0` - Audio analysis (optional)
 - `soundfile>=0.12.0` - Audio file I/O
 - `rich>=13.0.0` - Terminal output formatting
+- `typer>=0.9.0` - CLI framework with Rich integration
 - `jsonschema>=4.17.0` - JSON schema validation
 - `pywin32>=306` - Windows long path support (Windows only)
 
@@ -494,16 +544,19 @@ A: Ensure cover art is 3000×3000 pixels, <5MB, JPG or PNG format
 A: Another workflow is running or stale lock file exists. Remove `.workflow.lock` if safe.
 
 **Q: Schema validation errors**  
-A: Schema validation is strict by default. Check `schemas/release_schema.json` for required fields. Set `strict_schema_validation: false` to allow warnings.
+A: Schema validation is strict by default. Check `schemas/release_schema.json` for required fields. Set `strict_schema_validation: false` to allow warnings. Use `distrokid validate configs/release.json` for detailed validation with beautiful formatting.
+
+**Q: UTF-8 encoding errors**  
+A: The CLI now provides clear error messages for encoding issues. Open the file in a text editor (VS Code, Notepad++) and save it with UTF-8 encoding. The `validate` command also checks UTF-8 encoding automatically.
 
 **Q: Windows long path errors**  
 A: Install `pywin32` for automatic long path support: `pip install pywin32`
 
 **Q: Where are log files?**  
-A: Logs are written to `runtime/logs/release_packer_YYYYMMDD.log`
+A: Logs are written to `runtime/logs/release_packer_YYYYMMDD.log`. Use `distrokid logs list` to see all logs, or `distrokid logs view` to view the most recent log with automatic test filtering.
 
 **Q: How to process multiple releases?**  
-A: Use `python scripts/pack.py --batch <directory>` to process all `release*.json` files.
+A: Use `distrokid batch ./releases` (recommended) or `python scripts/pack.py --batch <directory>` to process all `release*.json` files.
 
 For more troubleshooting, see `docs/QUICK_START.md` and `docs/WORKFLOW.md`.
 
@@ -516,6 +569,9 @@ For more troubleshooting, see `docs/QUICK_START.md` and `docs/WORKFLOW.md`.
 - DistroKid API integration for automated upload after file preparation
 
 **Recent Improvements:**
+- ✅ **Rich CLI Interface** - Beautiful Typer-based CLI with Rich formatting, enhanced error handling, and UTF-8 support
+- ✅ **Enhanced Error Messages** - All commands now feature beautiful panels with actionable troubleshooting steps
+- ✅ **Log Filtering** - Automatic filtering of test-related entries for cleaner log output
 - ✅ Structured logging with rotating log files (`runtime/logs/` directory)
 - ✅ JSON schema validation for configuration files (`schemas/` directory)
 - ✅ Batch processing for multiple releases (`--batch` flag)

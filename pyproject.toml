@@ -33,6 +33,7 @@ dependencies = [
     "librosa>=0.10.0",
     "soundfile>=0.12.0",
     "rich>=13.0.0",
+    "typer>=0.9.0",
 ]
 
 [project.optional-dependencies]
@@ -43,7 +44,8 @@ dev = [
 ]
 
 [project.scripts]
-distrokid-pack = "pack:main"
+distrokid = "scripts.cli:app"
+distrokid-pack = "scripts.pack:main"
 
 [project.urls]
 Homepage = "https://github.com/elirancv/distrokid-release-packer"
