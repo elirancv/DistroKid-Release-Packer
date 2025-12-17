@@ -1,0 +1,46 @@
+# Codecov Configuration
+# See: https://docs.codecov.com/docs/codecov-yaml
+
+codecov:
+  # Require coverage to be uploaded
+  require_ci_to_pass: false
+  
+  # Notify about coverage changes
+  notify:
+    after_n_builds: 1
+
+# Coverage configuration
+coverage:
+  # Status checks configuration
+  status:
+    project:
+      default:
+        target: 35%  # Minimum coverage threshold
+        threshold: 1%  # Allow 1% decrease before failing
+    patch:
+      default:
+        target: 35%
+        threshold: 1%
+
+# Flags for different test types
+flags:
+  unittests:
+    paths:
+      - scripts/
+    carryforward: false
+
+# Ignore paths that shouldn't affect coverage
+ignore:
+  - "scripts/pack.py"  # CLI entry point
+  - "scripts/check_tags.py"  # Utility script
+  - "scripts/batch_processor.py"  # Batch processing utility
+  - "tests/"  # Test files themselves
+  - "*/__pycache__/*"
+  - "*/venv/*"
+  - "*/env/*"
+
+# Comment configuration for PRs
+comment:
+  layout: "reach,diff,flags,tree,reach"
+  behavior: default
+  require_changes: false

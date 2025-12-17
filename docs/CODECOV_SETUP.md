@@ -6,6 +6,8 @@ If your Codecov badge shows "unknown" status, follow these steps to connect and 
 
 If your repository shows as "Deactivated" in Codecov dashboard:
 
+> **Note:** A `codecov.yml` configuration file has been added to the repository root. This helps Codecov recognize and properly process coverage reports. Validate it at: https://codecov.io/validate
+
 ### Step 1: Install Codecov GitHub App
 
 1. **Go to Codecov Dashboard:**
