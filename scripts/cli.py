@@ -76,11 +76,11 @@ def version_callback(value: bool):
                 if match:
                     version = match.group(1)
                 else:
-                    version = "2.3.0"
+                    version = "1.0.0"
             else:
-                version = "2.3.0"
+                version = "1.0.0"
         except Exception:
-            version = "2.3.0"
+            version = "1.0.0"
         
         from rich.panel import Panel
         version_panel = Panel(

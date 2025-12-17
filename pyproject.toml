@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "distrokid-release-packer"
-version = "2.3.0"
+version = "1.0.0"
 description = "Command-line automation toolkit for preparing and packaging music tracks generated in Suno for distribution via DistroKid"
 readme = "README.md"
 requires-python = ">=3.8"
