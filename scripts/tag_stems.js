@@ -57,7 +57,7 @@ function batchTagStems(stemsDir, artist, title) {
 
 // Usage
 if (require.main === module) {
-  batchTagStems('./Releases/DeepDive/Stems', 'YourArtistName', 'Deep Dive');
+  batchTagStems('./runtime/output/DeepDive/Stems', 'YourArtistName', 'Deep Dive');
 }
 
 module.exports = { tagStemFile, batchTagStems };

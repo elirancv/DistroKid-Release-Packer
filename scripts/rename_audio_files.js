@@ -42,7 +42,7 @@ function renameAudioFiles(artist, title, sourceDir, destDir, overwrite = false) 
 
 // Usage
 if (require.main === module) {
-  renameAudioFiles('Your Artist', 'Your Title', './exports', './Releases/TrackName/Audio');
+  renameAudioFiles('Your Artist', 'Your Title', './runtime/input', './runtime/output/TrackName/Audio');
 }
 
 module.exports = { renameAudioFiles };

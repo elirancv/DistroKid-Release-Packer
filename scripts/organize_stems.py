@@ -81,5 +81,5 @@ def organize_stems(artist, title, source_dir, stems_dir, overwrite=False):
 if __name__ == "__main__":
     # Usage
     organize_stems(
-        "YourArtistName", "Deep Dive", "./exports/stems", "./Releases/DeepDive/Stems"
+        "YourArtistName", "Deep Dive", "./runtime/input/stems", "./runtime/output/DeepDive/Stems"
     )

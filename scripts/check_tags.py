@@ -6,7 +6,7 @@ from mutagen.mp3 import MP3
 from mutagen.id3 import ID3
 from pathlib import Path
 
-files = list(Path("Releases/ThankYouLordNicolasJaarRMX/Audio").glob("*.mp3"))
+files = list(Path("runtime/output/ThankYouLordNicolasJaarRMX/Audio").glob("*.mp3"))
 if not files:
     print("No MP3 files found")
     exit(1)

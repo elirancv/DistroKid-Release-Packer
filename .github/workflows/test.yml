@@ -29,9 +29,10 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-cov
       
-      - name: Run tests
+      - name: Run tests with coverage
         run: |
-          pytest tests/ -v --cov=scripts --cov-report=term --cov-report=xml
+          pytest tests/ -v --cov=scripts --cov-report=term --cov-report=xml --cov-report=html
+          # Fail if coverage is below threshold (enforced via .coveragerc)
       
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4

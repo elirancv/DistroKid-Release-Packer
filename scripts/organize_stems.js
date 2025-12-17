@@ -68,7 +68,7 @@ function organizeStems(artist, title, sourceDir, stemsDir, overwrite = false) {
 
 // Usage
 if (require.main === module) {
-  organizeStems('YourArtistName', 'Deep Dive', './exports/stems', './Releases/DeepDive/Stems');
+  organizeStems('YourArtistName', 'Deep Dive', './runtime/input/stems', './runtime/output/DeepDive/Stems');
 }
 
 module.exports = { organizeStems };

@@ -77,4 +77,4 @@ def batch_tag_stems(stems_dir, artist, title):
 
 if __name__ == "__main__":
     # Usage
-    batch_tag_stems("./Releases/DeepDive/Stems", "YourArtistName", "Deep Dive")
+    batch_tag_stems("./runtime/output/DeepDive/Stems", "YourArtistName", "Deep Dive")

@@ -230,7 +230,7 @@ function validateConfig(config) {
   
   // Optional but recommended fields
   if (!('source_audio_dir' in config)) {
-    warnings.push("'source_audio_dir' not specified, using default: ./exports");
+    warnings.push("'source_audio_dir' not specified, using default: ./runtime/input");
   }
   
   // Validate paths if provided
@@ -391,7 +391,7 @@ async function runReleaseWorkflow(config) {
   
   console.log('🚀 Starting DistroKid Release Packer Workflow\n');
   
-  const releaseDir = config.release_dir || `./Releases/${title}`;
+  const releaseDir = config.release_dir || `./runtime/output/${title}`;
   
   // Acquire workflow lock and check disk space
   let lockFile = null;
@@ -427,7 +427,7 @@ async function runReleaseWorkflow(config) {
       renameAudioFiles(
         artist,
         title,
-        config.source_audio_dir || './exports',
+        config.source_audio_dir || './runtime/input',
         path.join(releaseDir, 'Audio'),
         config.overwrite_existing || false
       );
@@ -454,7 +454,7 @@ async function runReleaseWorkflow(config) {
       organizeStems(
         artist,
         title,
-        config.source_stems_dir || './exports/stems',
+        config.source_stems_dir || './runtime/input/stems',
         path.join(releaseDir, 'Stems'),
         config.overwrite_existing || false
       );
@@ -698,10 +698,10 @@ function main() {
     console.log(JSON.stringify({
       artist: 'YourArtistName',
       title: 'Deep Dive',
-      release_dir: './Releases/DeepDive',
+      release_dir: './runtime/output/DeepDive',
       suno_url: 'https://suno.com/song/abc123xyz?v=3.5.2',
-      source_audio_dir: './exports',
-      source_stems_dir: './exports/stems',
+      source_audio_dir: './runtime/input',
+      source_stems_dir: './runtime/input/stems',
       genre: 'Deep House',
       bpm: 122,
       id3_metadata: {

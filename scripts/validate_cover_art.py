@@ -92,7 +92,7 @@ def validate_cover_art(image_path):
 if __name__ == "__main__":
     # Usage
     from rich_utils import console
-    result = validate_cover_art("./Releases/TrackName/Cover/cover.jpg")
+    result = validate_cover_art("./runtime/output/TrackName/Cover/cover.jpg")
     console.print()
     status = "[bold green]PASSED[/bold green]" if result['valid'] else "[bold red]FAILED[/bold red]"
     console.print(f"[bold]Validation result:[/bold] {status}")
