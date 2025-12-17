@@ -10,6 +10,7 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ['3.8', '3.9', '3.10', '3.11']
@@ -25,9 +26,9 @@ jobs:
       
       - name: Install dependencies
         run: |
-          python -c "import subprocess, sys; subprocess.run([sys.executable, '-m', 'pip', 'install', '--upgrade', 'pip', '--quiet', '--disable-pip-version-check'], stderr=subprocess.DEVNULL)"
-          pip install -r requirements.txt --quiet
-          pip install pytest pytest-cov --quiet
+          python -c "import subprocess, sys; subprocess.run([sys.executable, '-m', 'pip', 'install', '--upgrade', 'pip', '--quiet', '--disable-pip-version-check'], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)"
+          pip install -r requirements.txt --quiet --disable-pip-version-check
+          pip install pytest pytest-cov --quiet --disable-pip-version-check
         env:
           PIP_NO_WARN_SCRIPT_LOCATION: 1
           PIP_DISABLE_PIP_VERSION_CHECK: 1
