@@ -66,17 +66,23 @@
 
 **Install and run:**
 ```bash
-# Install dependencies
+# Option 1: Install the package (makes 'distrokid' command available)
+pip install -e .
+
+# Option 2: Install dependencies only
 make setup
 
 # Initialize project (creates directories and configs)
+# If 'distrokid' command is not available, use: python scripts/cli.py init
 distrokid init
+# Or: python -m scripts.cli init
 
 # Edit configs/release.json with your track details
 # Place audio files in runtime/input/ directory
 
 # Run workflow
 distrokid pack configs/release.json
+# Or: python scripts/cli.py pack configs/release.json
 # Or use legacy: make run
 ```
 

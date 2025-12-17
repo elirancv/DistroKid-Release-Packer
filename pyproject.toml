@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "Eliran Cohen", email = ""}
+    {name = "Eliran Cohen"}
 ]
 keywords = ["distrokid", "suno", "music", "automation", "id3", "metadata", "audio"]
 classifiers = [
@@ -44,7 +44,7 @@ dev = [
 ]
 
 [project.scripts]
-distrokid = "scripts.cli:app"
+distrokid = "scripts.cli:main"
 distrokid-pack = "scripts.pack:main"
 
 [project.urls]

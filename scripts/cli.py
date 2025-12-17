@@ -93,8 +93,13 @@ def version_callback(value: bool):
         raise typer.Exit()
 
 
+def main():
+    """Main entry point for the CLI."""
+    app()
+
+
 @app.callback()
-def main(
+def callback(
     version: Optional[bool] = typer.Option(
         None,
         "--version",
