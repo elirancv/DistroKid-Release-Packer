@@ -296,7 +296,7 @@ htmlcov/
 .tox/
 .hypothesis/
 test-results/
-junit.xml
+# junit.xml - Keep this file for CI/CD (uploaded to Codecov Test Analytics)
 
 # Documentation builds
 docs/_build/

@@ -33,8 +33,9 @@ jobs:
       
       - name: Run tests with coverage
         run: |
-          pytest tests/ -v --cov=scripts --cov-report=term --cov-report=xml --cov-report=html
+          pytest tests/ -v --cov=scripts --cov-report=term --cov-report=xml --cov-report=html --junitxml=junit.xml -o junit_family=legacy
           # Fail if coverage is below threshold (enforced via .coveragerc)
+          # JUnit XML generated for Test Analytics
       
       - name: Verify coverage file exists
         run: |
@@ -52,4 +53,12 @@ jobs:
           slug: elirancv/distrokid-release-packer
           # For public repos, Codecov auto-detects from GitHub context
           # If badge shows "unknown", ensure repository is connected at codecov.io
+      
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          files: ./junit.xml
+          # Token optional for public repos when GitHub App is installed
+          # If upload fails, add: token: ${{ secrets.CODECOV_TOKEN }}
 
