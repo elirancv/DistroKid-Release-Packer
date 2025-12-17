@@ -57,16 +57,23 @@ GITHUB_DARK_THEME = TerminalTheme(
     ],
 )
 
-def export_to_html(content_func, filename, title):
+def export_to_html(content_func, filename, title, command=None):
     """Run a function that prints Rich content and export to HTML."""
     console.clear()
-    console.print(f"[bold cyan]# {title}[/bold cyan]\n")
+    
+    # Add terminal-like header with command
+    if command:
+        # Show command prompt (Windows-style for consistency)
+        console.print(f"[dim]C:\\Users\\user\\project>[/dim] [bold white]{command}[/bold white]")
+        console.print()
+    
+    # Don't print title as header, let the content speak for itself
     content_func()
     
     html = console.export_html(
         theme=GITHUB_DARK_THEME,
         clear=True,
-        code_format="<pre style='font-family: Consolas, Monaco, monospace; font-size: 14px; background-color: #0d1117; color: #c9d1d9; padding: 20px; margin: 0;'>{code}</pre>"
+        code_format="<pre style='font-family: Consolas, Monaco, monospace; font-size: 14px; background-color: #1e1e1e; color: #d4d4d4; padding: 16px; margin: 0; border: 1px solid #3e3e42; border-radius: 4px;'>{code}</pre>"
     )
     
     # Ensure we have a full HTML document with dark background
@@ -86,22 +93,31 @@ html {{
 body {{
     background-color: #0d1117 !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 20px !important;
     color: #c9d1d9 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 100vh !important;
 }}
 pre {{
-    background-color: #0d1117 !important;
-    color: #c9d1d9 !important;
+    background-color: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    border: 1px solid #3e3e42 !important;
+    border-radius: 4px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
 }}
 code {{
-    background-color: #0d1117 !important;
+    background-color: #1e1e1e !important;
 }}
 span {{
     background-color: transparent !important;
 }}
 </style>
 </head>
-<body style="background-color: #0d1117 !important; margin: 0 !important; padding: 0 !important;">
+<body style="background-color: #0d1117 !important; margin: 0 !important; padding: 20px !important;">
 {html}
 </body>
 </html>"""
@@ -121,15 +137,24 @@ html {
 body {
     background-color: #0d1117 !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 20px !important;
     color: #c9d1d9 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 100vh !important;
 }
 pre {
-    background-color: #0d1117 !important;
-    color: #c9d1d9 !important;
+    background-color: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    border: 1px solid #3e3e42 !important;
+    border-radius: 4px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
 }
 code {
-    background-color: #0d1117 !important;
+    background-color: #1e1e1e !important;
 }
 span {
     background-color: transparent !important;
@@ -244,7 +269,7 @@ def html_to_png(html_file: Path, png_file: Path):
                     return None  # Signal that browser needs installation
                 raise
             
-            page = browser.new_page(viewport={"width": 900, "height": 600})
+            page = browser.new_page(viewport={"width": 1000, "height": 700})
             # Set dark background to match GitHub
             page.goto(f"file://{html_file.absolute()}")
             # Inject CSS to ensure dark background - override ALL possible backgrounds
@@ -255,17 +280,23 @@ def html_to_png(html_file: Path, png_file: Path):
                 body {
                     background-color: #0d1117 !important;
                     margin: 0 !important;
-                    padding: 0 !important;
+                    padding: 20px !important;
+                    display: flex !important;
+                    justify-content: center !important;
+                    align-items: center !important;
                 }
                 html {
                     background-color: #0d1117 !important;
                 }
                 pre {
-                    background-color: #0d1117 !important;
-                    color: #c9d1d9 !important;
+                    background-color: #1e1e1e !important;
+                    color: #d4d4d4 !important;
+                    border: 1px solid #3e3e42 !important;
+                    border-radius: 4px !important;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
                 }
                 code {
-                    background-color: #0d1117 !important;
+                    background-color: #1e1e1e !important;
                 }
                 span {
                     background-color: transparent !important;
@@ -290,10 +321,14 @@ def main():
     print("Generating Rich CLI output HTML files for screenshots...\n")
     
     html_files = [
-        export_to_html(pack_workflow_start, "pack-workflow-start.html", "Pack Workflow - Start"),
-        export_to_html(pack_workflow_steps, "pack-workflow-steps.html", "Pack Workflow - Steps"),
-        export_to_html(pack_workflow_success, "pack-workflow-success.html", "Pack Workflow - Success"),
-        export_to_html(pack_dry_run, "pack-dry-run.html", "Pack - Dry Run Validation"),
+        export_to_html(pack_workflow_start, "pack-workflow-start.html", "Pack Workflow - Start", 
+                      command="distrokid pack configs/release.json"),
+        export_to_html(pack_workflow_steps, "pack-workflow-steps.html", "Pack Workflow - Steps",
+                      command="distrokid pack configs/release.json"),
+        export_to_html(pack_workflow_success, "pack-workflow-success.html", "Pack Workflow - Success",
+                      command="distrokid pack configs/release.json"),
+        export_to_html(pack_dry_run, "pack-dry-run.html", "Pack - Dry Run Validation",
+                      command="distrokid pack configs/release.json --dry-run"),
     ]
     
     print(f"\n✅ All HTML files generated in: {output_dir}")
