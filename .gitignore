@@ -213,6 +213,8 @@ runtime/
 # Configuration (keep examples, ignore personal)
 release.json
 artist-defaults.json
+configs/config.json
+configs/user_settings.json
 *.local.json
 secrets.json
 .env.local
