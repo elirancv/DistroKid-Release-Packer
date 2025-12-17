@@ -40,7 +40,6 @@ jobs:
           files: ./coverage.xml
           fail_ci_if_error: false
           verbose: true
-          token: ${{ secrets.CODECOV_TOKEN }}
           flags: unittests
           name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
 
