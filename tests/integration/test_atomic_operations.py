@@ -136,17 +136,20 @@ def test_no_partial_files_on_failure(temp_source_dir, temp_dest_dir):
             if existing_file.exists():
                 existing_file.unlink()
     else:
-        # Unix: use chmod
+        # Unix: use chmod to make directory read-only
+        # This will cause the operation to fail when trying to write
         temp_dest_dir.chmod(0o444)
         try:
             with pytest.raises(Exception):
                 rename_audio_files(artist, title, str(temp_source_dir), str(temp_dest_dir))
-            
-            assert not expected_file.exists(), "Final file should not exist after failure"
-            temp_files = list(temp_dest_dir.glob("*.tmp"))
-            assert len(temp_files) == 0, f"No temp files should remain: {temp_files}"
         finally:
+            # Restore permissions BEFORE checking files (can't check files in read-only dir)
             temp_dest_dir.chmod(0o755)
+        
+        # Now check files after restoring permissions
+        assert not expected_file.exists(), "Final file should not exist after failure"
+        temp_files = list(temp_dest_dir.glob("*.tmp"))
+        assert len(temp_files) == 0, f"No temp files should remain: {temp_files}"
 
 
 def test_atomic_rename_preserves_file_content(temp_source_dir, temp_dest_dir):

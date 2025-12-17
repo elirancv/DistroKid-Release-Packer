@@ -73,9 +73,6 @@ DistroKid Release Packer/
 │   ├── validate_cover_art.py
 │   ├── validate_compliance.py
 │   └── README.md
-├── .cursor/
-│   └── rules/
-│       └── distrokid.cursorrules  # Coding standards
 ├── release.example.json          # Configuration template
 ├── requirements.txt            # Python dependencies
 ├── package.json                # JavaScript dependencies
@@ -114,11 +111,11 @@ python scripts/orchestrator.py  # Shows example config
 - [Quick Start Guide](QUICK_START.md) - Get started in 5 minutes
 - [Scripts Documentation](scripts/README.md) - Individual script usage
 - [Full Documentation](DistroKid%20Release%20Packer.md) - Complete workflow
-- [Cursor Rules](.cursor/rules/distrokid.cursorrules) - Coding standards
+- [Contributing Guidelines](CONTRIBUTING.md) - Coding standards
 
 ## Support
 
-All scripts follow the coding standards in `.cursor/rules/distrokid.cursorrules` and are production-ready.
+All scripts follow the project's coding standards and are production-ready.
 
 Happy releasing! 🎵
 

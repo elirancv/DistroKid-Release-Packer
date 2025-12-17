@@ -144,7 +144,7 @@ All automation scripts are available in both Python and JavaScript:
 
 ### Configuration Files
 
-- **`.cursor/rules/`** - Cursor IDE coding standards
+- **`docs/CONTRIBUTING.md`** - Coding standards and contribution guidelines
 - **`.github/workflows/`** - CI/CD pipeline configuration
 - **`release.example.json`** - Example configuration (copy to `release.json`)
 
