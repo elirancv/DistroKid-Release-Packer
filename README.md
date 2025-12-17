@@ -19,11 +19,15 @@
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Architecture](#architecture)
+- [Project Structure](#project-structure)
 - [Development](#development)
 - [Testing](#testing)
+- [Technology Stack](#technology-stack)
 - [Troubleshooting](#troubleshooting)
+- [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
+- [References](#references)
 
 ---
 
@@ -33,19 +37,19 @@
 - ✅ **Automated Workflow** - Complete Suno → DistroKid pipeline automation
 - ✅ **ID3v2 Tagging** - Full metadata embedding with cover art support
 - ✅ **Compliance Validation** - DistroKid requirements checking (dimensions, file size, audio specs)
-- ✅ **Batch Processing** - Process multiple releases in a single run
+- ✅ **Batch Processing** - Process multiple releases in a single run with `--batch` flag
 - ✅ **Schema Validation** - JSON schema validation with fallback basic validation
 - ✅ **Atomic Operations** - Safe file operations with temporary files and atomic renames
 - ✅ **Concurrency Safety** - Lock file mechanism prevents concurrent execution conflicts
-- ✅ **Structured Logging** - Rotating log files with detailed context
-- ✅ **Error Recovery** - Retry mechanisms with exponential backoff
-- ✅ **Windows Support** - Long path support and reserved filename handling
+- ✅ **Structured Logging** - Rotating log files with detailed context (10MB max, 5 backups)
+- ✅ **Error Recovery** - Retry mechanisms with exponential backoff for transient failures
+- ✅ **Windows Support** - Long path support via pywin32 and reserved filename handling
 
 **Production-Ready:**
 - ✅ **Path Safety** - Traversal attack prevention and path validation
 - ✅ **Type Safety** - Comprehensive type hints and schema validation
 - ✅ **Test Coverage** - 70%+ coverage with unit and integration tests
-- ✅ **CI/CD** - Automated testing across multiple OS and Python versions
+- ✅ **CI/CD** - Automated testing across multiple OS (Ubuntu, Windows, macOS) and Python versions (3.8-3.11)
 - ✅ **Code Quality** - Ruff linting/formatting with pre-commit hooks
 
 ---
@@ -309,7 +313,9 @@ flowchart TD
 - **Atomic Operations:** All file operations use temporary files and atomic renames
 - **Path Safety:** Traversal prevention and Windows reserved name handling
 
-### Project Structure
+---
+
+## Project Structure
 
 ```
 .
@@ -325,16 +331,44 @@ flowchart TD
 │   ├── batch_processor.py     # Batch processing
 │   ├── logger_config.py       # Structured logging
 │   ├── validate_config.py     # Schema validation
-│   └── retry_utils.py         # Error recovery
+│   ├── retry_utils.py         # Error recovery
+│   ├── extract_suno_version.py/js
+│   ├── rename_audio_files.py/js
+│   ├── organize_stems.py/js
+│   ├── tag_audio_id3.py/js
+│   ├── validate_cover_art.py
+│   ├── validate_compliance.py
+│   └── fix_clipping.py
 ├── tests/                     # Test suite
 │   ├── unit/                  # Unit tests
-│   └── integration/           # Integration tests
+│   │   ├── test_config_validation.py
+│   │   ├── test_error_handling.py
+│   │   └── test_windows_paths.py
+│   ├── integration/           # Integration tests
+│   │   ├── test_atomic_operations.py
+│   │   ├── test_concurrent_workflows.py
+│   │   ├── test_e2e_validation.py
+│   │   └── test_full_workflow.py
+│   └── fixtures/              # Test data
 ├── docs/                      # Documentation
+│   ├── README.md              # Documentation index
+│   ├── QUICK_START.md
+│   ├── WORKFLOW.md
+│   ├── CONTRIBUTING.md
+│   └── CHANGELOG.md
 └── runtime/                   # Runtime directories (gitignored)
     ├── input/                  # Source audio files
     ├── output/                 # Generated releases
     └── logs/                   # Log files
 ```
+
+**Key directories:**
+- `scripts/` - Modular workflow scripts and CLI entry points (Python and JavaScript variants)
+- `configs/` - Configuration files (example templates and runtime configs)
+- `schemas/` - JSON schema definitions for configuration validation
+- `docs/` - Comprehensive documentation and guides
+- `tests/` - Unit and integration test suite
+- `runtime/` - Runtime directories (gitignored)
 
 ---
 
@@ -482,16 +516,17 @@ For more troubleshooting, see `docs/QUICK_START.md` and `docs/WORKFLOW.md`.
 - DistroKid API integration for automated upload after file preparation
 
 **Recent Improvements:**
-- ✅ Structured logging with rotating log files
-- ✅ JSON schema validation for configuration files
-- ✅ Batch processing for multiple releases
-- ✅ Automated linting/formatting with Ruff
-- ✅ Coverage enforcement (minimum 70% threshold)
-- ✅ Windows-specific testing and path handling
-- ✅ Error recovery/retry mechanisms
-- ✅ Atomic file operations
-- ✅ Concurrent execution safety
-- ✅ Windows long path support
+- ✅ Structured logging with rotating log files (`runtime/logs/` directory)
+- ✅ JSON schema validation for configuration files (`schemas/` directory)
+- ✅ Batch processing for multiple releases (`--batch` flag)
+- ✅ Automated linting/formatting with Ruff (`ruff.toml` + pre-commit hooks)
+- ✅ Coverage enforcement (minimum 70% threshold via `.coveragerc`)
+- ✅ Windows-specific testing (`tests/unit/test_windows_paths.py`)
+- ✅ Error recovery/retry mechanisms (`scripts/retry_utils.py` with exponential backoff)
+- ✅ Strict schema validation mode (`strict_schema_validation` config flag)
+- ✅ Atomic file operations (temporary files + atomic renames)
+- ✅ Concurrent execution safety (atomic lock file acquisition)
+- ✅ Windows long path support (pywin32 integration)
 
 ---
 
@@ -541,3 +576,7 @@ We welcome contributions! Please see our [Contributing Guidelines](docs/CONTRIBU
 - [DistroKid Upload Requirements](https://distrokid.com/help/) - Official DistroKid documentation
 - [ID3v2 Specification](https://id3.org/id3v2.3.0) - ID3 tag standard
 - [Suno AI](https://suno.ai) - Music generation platform
+
+**Related Projects:**
+- `mutagen` - Python ID3v2 library
+- `node-id3` - JavaScript ID3v2 library
