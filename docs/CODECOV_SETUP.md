@@ -87,6 +87,8 @@ The workflow also uploads test results (JUnit XML) for Test Analytics:
 
 **Note:** Test Analytics is separate from code coverage. The coverage badge shows code coverage percentage, while Test Analytics shows test execution metrics.
 
+**Implementation:** Uses `codecov/codecov-action@v5` with `report_type: test_results` (the deprecated `test-results-action@v1` has been replaced).
+
 ## Verify Setup
 
 After connecting:
