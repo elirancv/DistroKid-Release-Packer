@@ -173,21 +173,8 @@ span {
 def pack_workflow_start():
     """Generate pack workflow start output."""
     from rich.panel import Panel
-    from rich.json import JSON
+    from rich.table import Table
     from rich import box
-    
-    # Sample configuration data
-    config_data = {
-        "title": "My Awesome Track",
-        "artist": "Test Artist",
-        "genre": "Electronic",
-        "bpm": 128,
-        "release_date": "2025-01-15",
-        "tag_audio": True,
-        "validate_cover": True,
-        "validate_compliance": True,
-        "suno_url": "https://suno.com/song/abc123"
-    }
     
     loading_panel = Panel(
         "[bold bright_cyan]Processing Release[/bold bright_cyan]\n\n"
@@ -199,9 +186,29 @@ def pack_workflow_start():
     console.print(loading_panel)
     console.print()
     
-    # Display JSON configuration with Rich formatting
-    console.print("[bold]Configuration:[/bold]")
-    console.print(JSON.from_data(config_data))
+    # Display configuration in Rich table format
+    config_table = Table(
+        title="[bold cyan]Configuration[/bold cyan]",
+        box=box.ROUNDED,
+        show_header=True,
+        header_style="bold cyan",
+        border_style="cyan",
+        padding=(0, 1)
+    )
+    config_table.add_column("Setting", style="bold white", no_wrap=True)
+    config_table.add_column("Value", style="cyan")
+    
+    config_table.add_row("Title", "[bold]My Awesome Track[/bold]")
+    config_table.add_row("Artist", "[bold]Test Artist[/bold]")
+    config_table.add_row("Genre", "Electronic")
+    config_table.add_row("BPM", "128")
+    config_table.add_row("Release Date", "2025-01-15")
+    config_table.add_row("Tag Audio", "[bold green]✓[/bold green] Enabled")
+    config_table.add_row("Validate Cover", "[bold green]✓[/bold green] Enabled")
+    config_table.add_row("Validate Compliance", "[bold green]✓[/bold green] Enabled")
+    config_table.add_row("Suno URL", "[dim]https://suno.com/song/abc123[/dim]")
+    
+    console.print(config_table)
     console.print()
 
 def pack_workflow_success():
@@ -252,20 +259,8 @@ def pack_workflow_steps():
 def pack_dry_run():
     """Generate pack dry-run validation output."""
     from rich.panel import Panel
-    from rich.json import JSON
+    from rich.table import Table
     from rich import box
-    
-    # Sample configuration data
-    config_data = {
-        "title": "My Awesome Track",
-        "artist": "Test Artist",
-        "genre": "Electronic",
-        "bpm": 128,
-        "release_date": "2025-01-15",
-        "tag_audio": True,
-        "validate_cover": True,
-        "validate_compliance": True
-    }
     
     validation_panel = Panel(
         "[bold bright_cyan]Validating Configuration[/bold bright_cyan]\n\n"
@@ -277,9 +272,28 @@ def pack_dry_run():
     console.print(validation_panel)
     console.print()
     
-    # Display JSON configuration with Rich formatting
-    console.print("[bold]Configuration:[/bold]")
-    console.print(JSON.from_data(config_data))
+    # Display configuration in Rich table format
+    config_table = Table(
+        title="[bold cyan]Configuration[/bold cyan]",
+        box=box.ROUNDED,
+        show_header=True,
+        header_style="bold cyan",
+        border_style="cyan",
+        padding=(0, 1)
+    )
+    config_table.add_column("Setting", style="bold white", no_wrap=True)
+    config_table.add_column("Value", style="cyan")
+    
+    config_table.add_row("Title", "[bold]My Awesome Track[/bold]")
+    config_table.add_row("Artist", "[bold]Test Artist[/bold]")
+    config_table.add_row("Genre", "Electronic")
+    config_table.add_row("BPM", "128")
+    config_table.add_row("Release Date", "2025-01-15")
+    config_table.add_row("Tag Audio", "[bold green]✓[/bold green] Enabled")
+    config_table.add_row("Validate Cover", "[bold green]✓[/bold green] Enabled")
+    config_table.add_row("Validate Compliance", "[bold green]✓[/bold green] Enabled")
+    
+    console.print(config_table)
     console.print()
     
     success_panel = Panel(
