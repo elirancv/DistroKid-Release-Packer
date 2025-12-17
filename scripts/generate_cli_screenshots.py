@@ -73,29 +73,72 @@ def export_to_html(content_func, filename, title):
     if not html.strip().startswith('<!DOCTYPE'):
         # Wrap in full HTML document if it's just a fragment
         html = f"""<!DOCTYPE html>
-<html style="background-color: #0d1117;">
+<html style="background-color: #0d1117 !important;">
 <head>
 <meta charset="UTF-8">
 <style>
+* {{
+    background-color: #0d1117 !important;
+}}
+html {{
+    background-color: #0d1117 !important;
+}}
 body {{
-    background-color: #0d1117;
-    margin: 0;
-    padding: 0;
-    color: #c9d1d9;
+    background-color: #0d1117 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #c9d1d9 !important;
+}}
+pre {{
+    background-color: #0d1117 !important;
+    color: #c9d1d9 !important;
+}}
+code {{
+    background-color: #0d1117 !important;
+}}
+span {{
+    background-color: transparent !important;
 }}
 </style>
 </head>
-<body style="background-color: #0d1117; margin: 0; padding: 0;">
+<body style="background-color: #0d1117 !important; margin: 0 !important; padding: 0 !important;">
 {html}
 </body>
 </html>"""
     else:
         # Inject dark background into existing HTML document
-        html = html.replace('<body>', '<body style="background-color: #0d1117; margin: 0; padding: 0;">')
-        html = html.replace('<html>', '<html style="background-color: #0d1117;">')
-        # Add style tag if not present
-        if '<style>' not in html:
-            html = html.replace('</head>', '<style>body { background-color: #0d1117; margin: 0; padding: 0; }</style></head>')
+        html = html.replace('<body>', '<body style="background-color: #0d1117 !important; margin: 0 !important; padding: 0 !important;">')
+        html = html.replace('<html>', '<html style="background-color: #0d1117 !important;">')
+        # Add comprehensive style tag
+        dark_theme_css = """
+<style>
+* {
+    background-color: #0d1117 !important;
+}
+html {
+    background-color: #0d1117 !important;
+}
+body {
+    background-color: #0d1117 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #c9d1d9 !important;
+}
+pre {
+    background-color: #0d1117 !important;
+    color: #c9d1d9 !important;
+}
+code {
+    background-color: #0d1117 !important;
+}
+span {
+    background-color: transparent !important;
+}
+</style>"""
+        if '</head>' in html:
+            html = html.replace('</head>', dark_theme_css + '</head>')
+        elif '<head>' in html and '</head>' not in html:
+            html = html.replace('<head>', '<head>' + dark_theme_css)
     
     output_file = output_dir / filename
     output_file.write_text(html, encoding="utf-8")
