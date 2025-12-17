@@ -173,7 +173,21 @@ span {
 def pack_workflow_start():
     """Generate pack workflow start output."""
     from rich.panel import Panel
+    from rich.json import JSON
     from rich import box
+    
+    # Sample configuration data
+    config_data = {
+        "title": "My Awesome Track",
+        "artist": "Test Artist",
+        "genre": "Electronic",
+        "bpm": 128,
+        "release_date": "2025-01-15",
+        "tag_audio": True,
+        "validate_cover": True,
+        "validate_compliance": True,
+        "suno_url": "https://suno.com/song/abc123"
+    }
     
     loading_panel = Panel(
         "[bold bright_cyan]Processing Release[/bold bright_cyan]\n\n"
@@ -183,6 +197,11 @@ def pack_workflow_start():
         padding=(1, 2)
     )
     console.print(loading_panel)
+    console.print()
+    
+    # Display JSON configuration with Rich formatting
+    console.print("[bold]Configuration:[/bold]")
+    console.print(JSON.from_data(config_data))
     console.print()
 
 def pack_workflow_success():
@@ -233,7 +252,20 @@ def pack_workflow_steps():
 def pack_dry_run():
     """Generate pack dry-run validation output."""
     from rich.panel import Panel
+    from rich.json import JSON
     from rich import box
+    
+    # Sample configuration data
+    config_data = {
+        "title": "My Awesome Track",
+        "artist": "Test Artist",
+        "genre": "Electronic",
+        "bpm": 128,
+        "release_date": "2025-01-15",
+        "tag_audio": True,
+        "validate_cover": True,
+        "validate_compliance": True
+    }
     
     validation_panel = Panel(
         "[bold bright_cyan]Validating Configuration[/bold bright_cyan]\n\n"
@@ -243,6 +275,11 @@ def pack_dry_run():
         padding=(1, 2)
     )
     console.print(validation_panel)
+    console.print()
+    
+    # Display JSON configuration with Rich formatting
+    console.print("[bold]Configuration:[/bold]")
+    console.print(JSON.from_data(config_data))
     console.print()
     
     success_panel = Panel(
