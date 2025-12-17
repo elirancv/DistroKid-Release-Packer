@@ -18,7 +18,7 @@ tag_audio_file("track.mp3", "cover.jpg", {
 
 **Run script directly:**
 ```bash
-python scripts/orchestrator.py release.json
+python scripts/pack.py configs/release.json
 ```
 
 For complete workflow usage, see the main `README.md`.
@@ -34,6 +34,8 @@ For complete workflow usage, see the main `README.md`.
 - `librosa>=0.10.0` - Audio analysis (optional)
 - `soundfile>=0.12.0` - Audio file I/O
 - `rich>=13.0.0` - Terminal output formatting
+- `jsonschema>=4.17.0` - JSON schema validation
+- `pywin32>=306` - Windows long path support (Windows only)
 
 **JavaScript Scripts:**
 - Node.js 14+
@@ -58,25 +60,38 @@ flowchart TD
     A --> F[validate_cover_art]
     A --> G[validate_compliance]
     A --> H[fix_clipping]
-    B --> I[Release Directory]
-    C --> I
-    D --> I
-    E --> I
-    F --> I
-    G --> I
-    H --> I
+    A --> I[batch_processor]
+    A --> J[validate_config]
+    A --> K[logger_config]
+    A --> L[retry_utils]
+    B --> M[Release Directory]
+    C --> M
+    D --> M
+    E --> M
+    F --> M
+    G --> M
+    H --> M
 ```
 
 **Execution model:** Scripts export functions that are called by the orchestrator. Each script performs a single workflow step and can be used independently.
+
+**Key features:**
+- **Structured logging** - All scripts use centralized logging via `logger_config.py`
+- **Error recovery** - Retry mechanisms via `retry_utils.py` for transient failures
+- **Schema validation** - Configuration validation via `validate_config.py` with JSON schemas
+- **Batch processing** - Process multiple releases via `batch_processor.py`
+- **Atomic operations** - File operations use temporary files and atomic renames
+- **Path safety** - Path traversal prevention and Windows reserved name handling
 
 ---
 
 ## Project Structure
 
 **Core workflow scripts:**
+- `pack.py/js` - CLI entry points
 - `orchestrator.py/js` - Main workflow coordinator
 - `extract_suno_version.py/js` - Extract Suno version from URLs/metadata
-- `rename_audio_files.py/js` - Rename audio files to naming convention
+- `rename_audio_files.py/js` - Rename audio files to naming convention (with atomic operations)
 - `organize_stems.py/js` - Organize stem files with metadata
 - `tag_stems.py/js` - Apply ID3v2 tags to stem files
 - `tag_audio_id3.py/js` - Apply ID3v2 tags and embed cover art
@@ -85,6 +100,10 @@ flowchart TD
 - `fix_clipping.py` - Fix audio clipping using ffmpeg
 
 **Utility scripts:**
+- `batch_processor.py` - Batch processing for multiple releases
+- `logger_config.py` - Structured logging configuration with rotating file handlers
+- `validate_config.py` - JSON schema validation for configuration files
+- `retry_utils.py` - Error recovery and retry mechanisms with exponential backoff
 - `rich_utils.py` - Terminal output formatting utilities
 - `check_tags.py` - Utility for checking ID3 tags
 
@@ -102,16 +121,17 @@ version_info = extract_suno_version_from_url("https://suno.com/song/abc123?v=3.5
 # Returns: {"version": "3.5.2", "build_id": "abc123"}
 ```
 
-**Rename audio files:**
+**Rename audio files (atomic):**
 ```python
 from scripts.rename_audio_files import rename_audio_files
 
 rename_audio_files(
     artist="Artist Name",
     title="Track Title",
-    source_dir="./exports",
-    dest_dir="./Releases/Track/Audio"
+    source_dir="./runtime/input",
+    dest_dir="./runtime/output/Track/Audio"
 )
+# Uses temporary files and atomic renames for safety
 ```
 
 **Tag audio file:**
@@ -160,6 +180,53 @@ fix_clipping_ffmpeg(
 )
 ```
 
+**Batch processing:**
+```python
+from scripts.batch_processor import process_batch
+from pathlib import Path
+
+results = process_batch(
+    config_dir=Path("./releases"),
+    pattern="release*.json",
+    continue_on_error=True,
+    dry_run=False
+)
+```
+
+**Schema validation:**
+```python
+from scripts.validate_config import validate_release_config
+
+is_valid, errors = validate_release_config("configs/release.json", strict=True)
+if not is_valid:
+    print("Validation errors:", errors)
+```
+
+**Retry mechanisms:**
+```python
+from scripts.retry_utils import retry, RetryContext, RetryableError
+
+# Decorator-based retry
+@retry(max_attempts=3, retryable_exceptions=(IOError, OSError))
+def risky_operation():
+    # Operation that may fail transiently
+    pass
+
+# Context manager-based retry
+with RetryContext(max_attempts=3, retryable_exceptions=(IOError,)):
+    # Operations with automatic retry
+    pass
+```
+
+**Structured logging:**
+```python
+from scripts.logger_config import get_logger
+
+logger = get_logger("my_script")
+logger.info("Operation started")
+logger.error("Operation failed", exc_info=True)
+```
+
 **JavaScript usage:**
 ```javascript
 const { extractSunoVersionFromUrl } = require('./scripts/extract_suno_version');
@@ -181,7 +248,7 @@ const { tagAudioFile } = require('./scripts/tag_audio_id3');
 **Install dependencies:**
 ```bash
 # Python
-pip install -r ../requirements.txt
+pip install -r requirements.txt
 
 # JavaScript
 npm install
@@ -197,9 +264,13 @@ node -e "require('./scripts/orchestrator'); console.log('OK')"
 
 ## Environment & Configuration
 
-**Not detected:** Scripts do not have their own configuration files. They receive configuration through function arguments or from the orchestrator's merged config (`artist-defaults.json` + `release.json`).
+**Configuration:** Scripts receive configuration through function arguments or from the orchestrator's merged config (`artist-defaults.json` + `release.json`). Configuration is validated against JSON schemas in `schemas/` directory.
 
-**Inferred:** Scripts read configuration from the orchestrator's merged config when called programmatically.
+**Schema validation:** All configuration files are validated against JSON schemas:
+- `schemas/release_schema.json` - Validates `release.json`
+- `schemas/artist_defaults_schema.json` - Validates `artist-defaults.json`
+
+**Strict mode:** Schema validation is strict by default. Set `strict_schema_validation: false` in config to allow warnings instead of errors.
 
 ---
 
@@ -207,19 +278,16 @@ node -e "require('./scripts/orchestrator'); console.log('OK')"
 
 **Python script execution:**
 ```bash
-python scripts/orchestrator.py release.json
-python scripts/extract_suno_version.py
-python scripts/rename_audio_files.py
-python scripts/tag_audio_id3.py
-python scripts/validate_compliance.py
+python scripts/pack.py configs/release.json
+python scripts/pack.py --batch ./releases
+python scripts/pack.py --batch ./releases --dry-run
+python scripts/orchestrator.py configs/release.json
 ```
 
 **JavaScript script execution:**
 ```bash
-node scripts/orchestrator.js release.json
-node scripts/extract_suno_version.js
-node scripts/rename_audio_files.js
-node scripts/tag_audio_id3.js
+node scripts/pack.js configs/release.json
+node scripts/orchestrator.js configs/release.json
 ```
 
 **Programmatic usage:** Import functions and call directly (see Core API section).
@@ -236,6 +304,8 @@ node scripts/tag_audio_id3.js
 - Always use `json.dump()` with `indent=2`
 - Use structured error objects for validation: `{"valid": bool, "errors": [], "warnings": []}`
 - Raise exceptions for operation functions (never return None to indicate failure)
+- Use type hints for public APIs
+- Atomic file operations: Use temporary files and `Path.replace()` for atomic renames
 
 **JavaScript:**
 - Use `path.join()` for all path operations
@@ -290,23 +360,37 @@ def perform_operation(input_data):
 - Metadata: `Artist - Title - Metadata.json`
 - Stems metadata: `Artist - Title - Stems_Metadata.json`
 
+**Path safety:**
+- All paths are validated for traversal attempts (`..`)
+- Windows reserved names (CON, PRN, etc.) are automatically sanitized
+- Paths are validated against base directories when applicable
+
 ---
 
 ## Testing & Quality
 
 **Testing:**
 - Scripts are tested through unit tests in `../tests/unit/`
-- Integration tests in `../tests/integration/` test full workflow
+- Integration tests in `../tests/integration/` test full workflow, concurrent execution, atomic operations
 - Test fixtures in `../tests/fixtures/` provide sample configs
+- Windows-specific tests in `../tests/unit/test_windows_paths.py`
 
 **Code quality:**
 - Structured error handling (validation vs operation functions)
-- Type hints recommended for Python functions
+- Type hints recommended and used for Python functions
 - Consistent file naming conventions enforced
+- Atomic file operations (temporary files + atomic renames)
+- Path safety validation (traversal prevention, reserved name handling)
+- Concurrent execution safety (lock file mechanism)
+
+**Code quality tools:**
+- **Linting:** Ruff configured (`ruff.toml`) - fast Python linter
+- **Formatting:** Ruff formatter - consistent code style
+- **Pre-commit hooks:** Automated checks on git commit (see `.pre-commit-config.yaml`)
 
 **Known gaps:**
-- No automated linting/formatting configuration detected
-- Some scripts may have limited error context in failure cases
+- Some JavaScript scripts may have limited error context in failure cases
+- Windows-specific edge cases may need additional testing
 
 ---
 
@@ -317,19 +401,28 @@ def perform_operation(input_data):
 - Node.js disk space check is limited (no built-in API)
 - ffmpeg required for clipping fix but not automatically installed
 - librosa optional for clipping detection (validation continues if missing)
-- No error recovery or retry mechanisms
-- No structured logging (uses Rich for output formatting)
 
 **Assumptions:**
 - Source files placed in expected directories before script execution
 - File system permissions allow read/write access
 - Required external tools (ffmpeg) installed and accessible in PATH if needed
+- Windows users have long path support enabled (via pywin32 or registry) for deep directory structures
+
+**Completed improvements:**
+- ✅ Structured logging implemented (`logger_config.py` with rotating file handlers)
+- ✅ Retry mechanisms implemented (`retry_utils.py` with exponential backoff)
+- ✅ Schema validation implemented (`validate_config.py` with JSON schemas)
+- ✅ Batch processing implemented (`batch_processor.py`)
+- ✅ Atomic file operations (temporary files + atomic renames)
+- ✅ Path safety validation (traversal prevention, reserved name handling)
+- ✅ Concurrent execution safety (atomic lock file acquisition)
+- ✅ Windows long path support (pywin32 integration)
+- ✅ Enhanced error context (detailed logging with file paths and operation context)
 
 **TODOs:**
-- Implement structured logging instead of print statements
-- Add retry mechanisms for transient failures
-- Improve error messages with more context
+- Improve error messages with more context (partially addressed)
 - Add progress indicators for long-running operations
+- Expand Windows-specific testing coverage
 
 ---
 
@@ -342,7 +435,7 @@ def perform_operation(input_data):
 ## Troubleshooting & FAQ
 
 **Q: ImportError for mutagen/Pillow**
-A: Install dependencies: `pip install -r ../requirements.txt`
+A: Install dependencies: `pip install -r requirements.txt`
 
 **Q: Script fails with FileNotFoundError**
 A: Ensure source files exist in expected directories before running
@@ -352,6 +445,18 @@ A: Run `npm install` to install JavaScript dependencies
 
 **Q: ffmpeg not found (fix_clipping.py)**
 A: Install ffmpeg and ensure it's in PATH, or use alternative method
+
+**Q: Schema validation errors**
+A: Check `schemas/release_schema.json` for required fields and types. Set `strict_schema_validation: false` to allow warnings instead of errors.
+
+**Q: Windows long path errors**
+A: Install `pywin32` for automatic long path support: `pip install pywin32`. Alternatively, enable long path support via Windows registry.
+
+**Q: Concurrent execution errors**
+A: Another workflow is running. Remove `.workflow.lock` if safe (stale lock).
+
+**Q: Where are log files?**
+A: Logs are written to `runtime/logs/release_packer_YYYYMMDD.log`. Check this directory for detailed workflow logs.
 
 ---
 
@@ -372,3 +477,4 @@ See main `README.md` for license information.
 - Main `README.md` - Project overview and usage
 - `docs/HOW_IT_WORKS.md` - Tool architecture explanation
 - `.cursor/rules/distrokid.cursorrules` - Code style standards
+- `docs/FEATURES_IMPLEMENTED.md` - New features documentation
