@@ -296,7 +296,7 @@ node scripts/orchestrator.js configs/release.json
 
 ## Development Workflow
 
-**Code style standards** (from `.cursor/rules/distrokid.cursorrules`):
+**Code style standards:**
 
 **Python:**
 - Use `pathlib.Path` for all file operations
@@ -462,7 +462,7 @@ A: Logs are written to `runtime/logs/release_packer_YYYYMMDD.log`. Check this di
 
 ## Contributing & Community
 
-See main `README.md` for contribution guidelines. Scripts must follow code style standards in `.cursor/rules/distrokid.cursorrules`.
+See main `README.md` for contribution guidelines. Scripts must follow the project's code style standards.
 
 ---
 
@@ -476,5 +476,5 @@ See main `README.md` for license information.
 
 - Main `README.md` - Project overview and usage
 - `docs/HOW_IT_WORKS.md` - Tool architecture explanation
-- `.cursor/rules/distrokid.cursorrules` - Code style standards
+- `docs/CONTRIBUTING.md` - Code style standards and contribution guidelines
 - `docs/FEATURES_IMPLEMENTED.md` - New features documentation

@@ -29,12 +29,12 @@ Thank you for your interest in contributing! This document provides guidelines a
 
 ## Coding Standards
 
-This project follows strict coding standards defined in `.cursor/rules/distrokid.cursorrules`. Key points:
+This project follows strict coding standards. Key points:
 
 - **Python:** Use `pathlib.Path` for file operations, snake_case for functions
 - **JavaScript:** Use `path.join()` for paths, camelCase for functions
 - **JSON:** Use snake_case for all keys, ISO 8601 for dates
-- **File Naming:** Follow exact conventions (see Cursor Rules)
+- **File Naming:** Follow exact conventions defined in project guidelines
 
 ## Making Changes
 
@@ -78,7 +78,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 Before submitting, ensure:
 - All scripts run without errors
-- Code follows the Cursor Rules
+- Code follows the project coding standards
 - Documentation is updated
 - No linter errors
 

@@ -50,6 +50,5 @@ jobs:
           verbose: true
           flags: unittests
           name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: elirancv/distrokid-release-packer
+          # For public repos, token is optional - Codecov auto-detects from GitHub context
 

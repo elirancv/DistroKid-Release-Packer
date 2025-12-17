@@ -1,6 +1,6 @@
 # Script Refactoring Summary
 
-All scripts have been extracted from `DistroKid Release Packer.md` and refactored to comply with `.cursor/rules/distrokid.cursorrules`.
+All scripts have been extracted from `DistroKid Release Packer.md` and refactored to comply with the project's coding standards.
 
 ## Key Changes Applied
 

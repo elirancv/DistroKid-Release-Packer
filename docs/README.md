@@ -152,5 +152,5 @@ See `CONTRIBUTING.md` for detailed contribution guidelines.
 
 - Main `README.md` - Project overview and entry point
 - `scripts/README.md` - Scripts documentation
-- `.cursor/rules/distrokid.cursorrules` - Code style standards
-- `FEATURES_IMPLEMENTED.md` - New features and improvements documentation
+- `docs/CONTRIBUTING.md` - Code style standards and contribution guidelines
+- `docs/FEATURES_IMPLEMENTED.md` - New features and improvements documentation

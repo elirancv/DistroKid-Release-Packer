@@ -233,5 +233,5 @@ This will show full tracebacks for any errors, making troubleshooting easier.
 
 - [Scripts Documentation](scripts/README.md)
 - [Full Documentation](DistroKid%20Release%20Packer.md)
-- [Cursor Rules](.cursor/rules/distrokid.cursorrules)
+- [Contributing Guidelines](CONTRIBUTING.md) - Code style standards
 

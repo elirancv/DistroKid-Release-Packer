@@ -543,7 +543,7 @@ We welcome contributions! Please see our [Contributing Guidelines](docs/CONTRIBU
 6. Submit a pull request
 
 **Code standards:**
-- Follow `.cursor/rules/distrokid.cursorrules`
+- Follow project coding standards (see `docs/CONTRIBUTING.md`)
 - Use structured error handling patterns
 - Add tests for validation functions
 - Update documentation for new features

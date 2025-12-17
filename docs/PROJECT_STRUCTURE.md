@@ -7,11 +7,6 @@ Complete overview of the DistroKid Release Packer project organization.
 ```
 DistroKid Release Packer/
 │
-├── .cursor/                    # Cursor IDE rules
-│   └── rules/
-│       ├── distrokid.cursorrules
-│       └── project-guidelines.cursorrules
-│
 ├── .github/                    # GitHub configuration
 │   ├── workflows/
 │   │   └── test.yml           # CI/CD pipeline
