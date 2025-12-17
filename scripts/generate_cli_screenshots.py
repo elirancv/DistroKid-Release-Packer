@@ -212,7 +212,7 @@ def pack_workflow_steps():
     console.print("[bold green]✓[/bold green] Configuration valid")
     console.print()
     console.print("[bold cyan][2/7][/bold cyan] Extracting Suno version...")
-    console.print("[bold green]✓[/bold green] Version: 4.0.0")
+    console.print("[bold green]✓[/bold green] Version: 5")
     console.print()
     console.print("[bold cyan][3/7][/bold cyan] Renaming audio files...")
     console.print("[bold green]✓[/bold green] Audio/Artist - Title.mp3")
