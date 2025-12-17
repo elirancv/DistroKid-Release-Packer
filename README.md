@@ -23,6 +23,7 @@
 - [Project Structure](#project-structure)
 - [Development](#development)
 - [Testing](#testing)
+- [Screenshots](#screenshots)
 - [Troubleshooting](#troubleshooting)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
@@ -527,6 +528,44 @@ make test-cov          # Run with coverage report
 make test-unit         # Run unit tests only
 make test-integration  # Run integration tests only
 ```
+
+---
+
+## Screenshots
+
+The Rich CLI interface provides beautiful, colorized terminal output with panels, tables, and syntax highlighting. The following screenshots showcase key features:
+
+### Status Dashboard
+
+The `distrokid status` command displays dependency status, recent releases, disk space, and log files in formatted tables.
+
+**View:** [Status Dashboard HTML](assets/screenshots/status-dashboard.html)
+
+### Configuration Viewer
+
+The `distrokid config show` command displays JSON configuration with Rich JSON formatting and syntax highlighting.
+
+**View:** [Configuration Viewer HTML](assets/screenshots/config-viewer.html)
+
+### System Check
+
+The `distrokid check` command shows system requirements, dependencies, and health checks in organized tables with clear success indicators.
+
+**View:** [System Check HTML](assets/screenshots/system-check.html)
+
+### Error Messages
+
+Rich-formatted error panels provide actionable troubleshooting steps with clear visual indicators.
+
+**View:** [Error Panel HTML](assets/screenshots/error-panel.html)
+
+**Note:** Screenshots are exported as HTML files that can be viewed in any browser. To regenerate these HTML exports, run:
+
+```bash
+python scripts/generate_cli_screenshots.py
+```
+
+The HTML files are located in `assets/screenshots/` and can be converted to PNG images using browser developer tools or screenshot utilities.
 
 ---
 
