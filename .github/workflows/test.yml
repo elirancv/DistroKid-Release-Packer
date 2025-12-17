@@ -51,14 +51,15 @@ jobs:
           flags: unittests
           name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
           slug: elirancv/distrokid-release-packer
-          # For public repos, Codecov auto-detects from GitHub context
-          # If badge shows "unknown", ensure repository is connected at codecov.io
+          token: ${{ secrets.CODECOV_TOKEN }}
+          # Token is optional for public repos, but using it provides better reliability
+          # Add CODECOV_TOKEN to GitHub Secrets: Settings → Secrets and variables → Actions
       
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
         with:
           files: ./junit.xml
-          # Token optional for public repos when GitHub App is installed
-          # If upload fails, add: token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          # Token optional but recommended for reliable uploads
 

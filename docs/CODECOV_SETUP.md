@@ -51,22 +51,31 @@ If your repository shows as "Deactivated" in Codecov dashboard:
    - The badge should update from "unknown" to show coverage percentage (e.g., "36%")
    - This may take a few minutes after the CI run completes
 
-## Alternative: Use Token (Optional)
+## Setting Up Codecov Token
 
-If you prefer to use a token instead:
+If you have a Codecov token (or want to use one for better reliability):
 
-1. **Get Token from Codecov:**
-   - Go to https://codecov.io
-   - Navigate to your repository settings
-   - Copy the upload token
+### Step 1: Add Token to GitHub Secrets
 
-2. **Add to GitHub Secrets:**
-   - Go to your GitHub repository
-   - Settings → Secrets and variables → Actions
-   - Add new secret: `CODECOV_TOKEN` with your token value
+1. **Go to your GitHub repository:**
+   - Visit: https://github.com/elirancv/distrokid-release-packer
+   - Click **Settings** (top menu)
+   - In the left sidebar, click **Secrets and variables** → **Actions**
 
-3. **Update Workflow:**
-   - Add `token: ${{ secrets.CODECOV_TOKEN }}` to the Codecov action
+2. **Add the secret:**
+   - Click **New repository secret**
+   - **Name:** `CODECOV_TOKEN`
+   - **Secret:** Paste your token: `28df8578-456c-417e-bb5d-3fc169852e2d`
+   - Click **Add secret**
+
+### Step 2: Update Workflow (Optional)
+
+The workflow is already configured to use the token if it exists. However, if you want to make it explicit:
+
+- The workflow will automatically use `${{ secrets.CODECOV_TOKEN }}` if the secret is set
+- No workflow changes needed - it's already configured to use the token when available
+
+**Note:** For public repositories with GitHub App installed, tokens are optional. However, using a token can provide more reliable uploads and better error messages.
 
 ## Test Analytics (Optional Feature)
 
