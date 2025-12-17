@@ -1,0 +1,56 @@
+# Ruff configuration for DistroKid Release Packer
+# Ruff is a fast Python linter and formatter written in Rust
+# Docs: https://docs.astral.sh/ruff/
+
+target-version = "py38"
+line-length = 100
+
+[lint]
+# Enable specific rule sets
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "ARG", # flake8-unused-arguments
+    "SIM", # flake8-simplify
+]
+
+ignore = [
+    "E501",  # Line too long (handled by formatter)
+    "B008",  # Do not perform function calls in argument defaults
+    "ARG001", # Unused function argument (common in callbacks)
+    "ARG002", # Unused method argument
+]
+
+# Exclude patterns
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv",
+    "venv",
+    "env",
+    "build",
+    "dist",
+    "*.egg-info",
+    ".pytest_cache",
+    "node_modules",
+]
+
+[lint.per-file-ignores]
+"tests/**/*.py" = ["ARG", "S101"]  # Allow unused args and assert in tests
+"scripts/orchestrator.py" = ["ARG001"]  # Some unused args in orchestrator
+
+[format]
+# Use double quotes for strings
+quote-style = "double"
+# Use spaces for indentation
+indent-style = "space"
+# Respect magic trailing comma
+skip-magic-trailing-comma = false
+# Line ending style
+line-ending = "auto"
+

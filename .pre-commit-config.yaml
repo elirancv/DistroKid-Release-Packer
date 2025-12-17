@@ -19,21 +19,17 @@ repos:
       - id: mixed-line-ending
         args: ['--fix=lf']
 
-  # Python formatting (optional - uncomment if using black)
-  # - repo: https://github.com/psf/black
-  #   rev: 23.12.1
-  #   hooks:
-  #     - id: black
-  #       language_version: python3
-  #       files: ^scripts/.*\.py$|^pack\.py$
+  # Note: Ruff includes formatting, so black is not needed
 
-  # Python linting (optional - uncomment if using ruff)
-  # - repo: https://github.com/astral-sh/ruff-pre-commit
-  #   rev: v0.1.6
-  #   hooks:
-  #     - id: ruff
-  #       args: [--fix, --exit-non-zero-on-fix]
-  #       files: ^scripts/.*\.py$|^pack\.py$
+  # Python linting with Ruff (fast, modern linter)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.6
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+        files: ^scripts/.*\.py$|^pack\.py$
+      - id: ruff-format
+        files: ^scripts/.*\.py$|^pack\.py$
 
   # JavaScript/Node.js (optional - uncomment if using ESLint)
   # - repo: https://github.com/pre-commit/mirrors-eslint

@@ -21,9 +21,21 @@ soundfile>=0.12.0
 # Terminal output and formatting
 rich>=13.0.0
 
+# JSON schema validation
+jsonschema>=4.17.0
+
+# Windows long path support (optional, Windows only)
+# Note: pywin32 is optional but recommended on Windows for long path support
+# It will be automatically installed on Windows when installing requirements
+pywin32>=306; sys_platform == "win32"
+
 # Testing framework
 pytest>=7.0.0
 pytest-cov>=4.0.0
+
+# Code quality (optional but recommended)
+ruff>=0.1.0  # Fast Python linter and formatter
+pre-commit>=3.0.0  # Git hooks framework
 
 # Standard library (no installation needed):
 # - json

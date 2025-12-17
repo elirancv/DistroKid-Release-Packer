@@ -1,7 +1,7 @@
 .PHONY: help install install-js install-all setup run run-js example validate \
         clean clean-all test test-cov test-unit test-integration \
         check check-python check-node init quick docs readme \
-        lint format info version ensure-config
+        lint format lint-fix info version ensure-config
 
 .DEFAULT_GOAL := help
 
@@ -27,10 +27,10 @@ NPM    := npm
 # ------------------------------------------------------------------------------
 PROJECT_NAME := DistroKid Release Packer
 VERSION      := 2.3.0
-CONFIG       := release.json
-CONFIG_EX    := release.example.json
+CONFIG       := configs/release.json
+CONFIG_EX    := configs/release.example.json
 PY_FILES     := scripts/*.py
-RELEASES_DIR := Releases
+RELEASES_DIR := runtime/output
 
 # ------------------------------------------------------------------------------
 # Shell behavior (Unix)
@@ -156,11 +156,11 @@ endif
 # ------------------------------------------------------------------------------
 run: ensure-config ## Run Python packer
 	$(call log,Running packer (Python))
-	$(PYTHON) pack.py $(CONFIG)
+	$(PYTHON) scripts/pack.py $(CONFIG)
 
 run-js: ensure-config ## Run JavaScript packer
 	$(call log,Running packer (JavaScript))
-	$(NODE) pack.js $(CONFIG)
+	$(NODE) scripts/pack.js $(CONFIG)
 
 quick: setup run ## Setup and run
 
@@ -173,7 +173,7 @@ validate: ensure-config ## Validate release.json
 	$(call ok,Valid JSON)
 
 example: ## Show example configuration
-	$(PYTHON) pack.py --example
+	$(PYTHON) scripts/pack.py --example
 
 # ------------------------------------------------------------------------------
 # Tests
@@ -222,14 +222,14 @@ else
 	pytest tests/integration/ -v
 endif
 
-test-cov: check-python ## Run tests with coverage
+test-cov: check-python ## Run tests with coverage (fails if below 70%)
 ifeq ($(IS_WINDOWS),1)
-	@$(PYTHON) -m pytest tests/ -v --cov=scripts --cov-report=term --cov-report=html 2>nul || (echo pytest not found. Install with: pip install pytest pytest-cov && exit 1)
-	$(call ok,Coverage report generated)
+	@$(PYTHON) -m pytest tests/ -v --cov=scripts --cov-report=term --cov-report=html --cov-config=.coveragerc 2>nul || (echo pytest not found. Install with: pip install pytest pytest-cov && exit 1)
+	$(call ok,Coverage report generated - minimum 70% required)
 else
 	@command -v pytest >/dev/null 2>&1 || (echo "pytest not found. Install with: pip install pytest pytest-cov" && exit 1)
-	pytest tests/ -v --cov=scripts --cov-report=term --cov-report=html
-	$(call ok,Coverage report generated)
+	pytest tests/ -v --cov=scripts --cov-report=term --cov-report=html --cov-config=.coveragerc
+	$(call ok,Coverage report generated - minimum 70% required)
 endif
 
 # ------------------------------------------------------------------------------
@@ -258,11 +258,21 @@ endif
 # ------------------------------------------------------------------------------
 # Dev tools
 # ------------------------------------------------------------------------------
-lint: ## Run pylint
-	pylint $(PY_FILES) || true
+lint: check-python ## Run ruff linter
+	@echo "$(BLUE)Running ruff linter...$(NC)"
+	@$(PYTHON) -m ruff check scripts/ pack.py || true
+	@$(call ok,Linting complete)
 
-format: ## Format code with black
-	black $(PY_FILES)
+format: check-python ## Format code with ruff
+	@echo "$(BLUE)Formatting code with ruff...$(NC)"
+	@$(PYTHON) -m ruff format scripts/ pack.py
+	@$(call ok,Formatting complete)
+
+lint-fix: check-python ## Run ruff linter and auto-fix issues
+	@echo "$(BLUE)Running ruff linter with auto-fix...$(NC)"
+	@$(PYTHON) -m ruff check --fix scripts/ || true
+	@$(PYTHON) -m ruff format scripts/
+	@$(call ok,Linting and formatting complete)
 
 # ------------------------------------------------------------------------------
 # Docs & info
