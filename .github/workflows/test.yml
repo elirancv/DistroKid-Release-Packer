@@ -25,7 +25,7 @@ jobs:
       
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip --quiet --disable-pip-version-check 2>&1 || true
+          python -m pip install --upgrade pip --quiet --disable-pip-version-check 2>/dev/null || python -m pip install --upgrade pip --quiet --disable-pip-version-check 2>$null || python -m pip install --upgrade pip --quiet --disable-pip-version-check
           pip install -r requirements.txt --quiet
           pip install pytest pytest-cov --quiet
         env:
