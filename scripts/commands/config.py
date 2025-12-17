@@ -55,6 +55,7 @@ def show(
             config_data = json.load(f)
         
         from rich.panel import Panel
+        from rich_utils import print_config_table
         console.print()
         title_panel = Panel(
             f"[bold bright_cyan]⚙️  Configuration File[/bold bright_cyan]\n[dim white]{config_path}[/dim white]",
@@ -64,7 +65,9 @@ def show(
         )
         console.print(title_panel)
         console.print()
-        console.print(JSON.from_data(config_data))
+        
+        # Display configuration in Rich table format instead of JSON
+        print_config_table(config_data, "Configuration")
         console.print()
         
     except UnicodeDecodeError as e:

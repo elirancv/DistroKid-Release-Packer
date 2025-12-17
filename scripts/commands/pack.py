@@ -60,6 +60,9 @@ def pack(
         raise typer.Exit(1)
     
     try:
+        # Load config first (needed for both dry-run and normal execution)
+        config = load_config(str(config_path), validate=True)
+        
         if dry_run:
             validation_panel = Panel(
                 f"[bold bright_cyan]🔍 Validating Configuration[/bold bright_cyan]\n\n"
@@ -72,7 +75,10 @@ def pack(
             console.print(validation_panel)
             console.print()
             
-            config = load_config(str(config_path), validate=True)
+            # Display configuration in Rich table format
+            from rich_utils import print_config_table
+            print_config_table(config, "Configuration")
+            console.print()
             
             success_panel = Panel(
                 f"[bold green on black]✓[/bold green on black] [bold green]Configuration is Valid[/bold green]\n\n"
@@ -97,8 +103,12 @@ def pack(
         console.print(loading_panel)
         console.print()
         
+        # Display configuration in Rich table format
+        from rich_utils import print_config_table
+        print_config_table(config, "Configuration")
+        console.print()
+        
         # Enable debug mode in config if requested
-        config = load_config(str(config_path), validate=True)
         if debug:
             config["debug"] = True
         

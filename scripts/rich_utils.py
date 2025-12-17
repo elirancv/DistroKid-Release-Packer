@@ -142,6 +142,77 @@ def print_config_summary(config: dict):
     console.print(table)
 
 
+def print_config_table(config: dict, title: str = "Configuration"):
+    """Print configuration as a professional Rich table."""
+    table = Table(
+        title=f"[bold cyan]{title}[/bold cyan]",
+        box=box.ROUNDED,
+        show_header=True,
+        header_style="bold cyan",
+        border_style="cyan",
+        padding=(0, 1)
+    )
+    table.add_column("Setting", style="bold white", no_wrap=True)
+    table.add_column("Value", style="cyan")
+    
+    # Core fields
+    if "title" in config:
+        table.add_row("Title", f"[bold]{config['title']}[/bold]")
+    if "artist" in config:
+        table.add_row("Artist", f"[bold]{config['artist']}[/bold]")
+    if "genre" in config:
+        table.add_row("Genre", str(config["genre"]))
+    if "bpm" in config:
+        table.add_row("BPM", str(config["bpm"]))
+    if "release_date" in config:
+        table.add_row("Release Date", str(config["release_date"]))
+    if "release_dir" in config:
+        table.add_row("Release Directory", f"[dim]{config['release_dir']}[/dim]")
+    
+    # Boolean flags
+    if "tag_audio" in config:
+        status = "[bold green]✓ Enabled[/bold green]" if config["tag_audio"] else "[dim]Disabled[/dim]"
+        table.add_row("Tag Audio", status)
+    if "validate_cover" in config:
+        status = "[bold green]✓ Enabled[/bold green]" if config["validate_cover"] else "[dim]Disabled[/dim]"
+        table.add_row("Validate Cover", status)
+    if "validate_compliance" in config:
+        status = "[bold green]✓ Enabled[/bold green]" if config["validate_compliance"] else "[dim]Disabled[/dim]"
+        table.add_row("Validate Compliance", status)
+    if "organize_stems" in config:
+        status = "[bold green]✓ Enabled[/bold green]" if config["organize_stems"] else "[dim]Disabled[/dim]"
+        table.add_row("Organize Stems", status)
+    if "tag_stems" in config:
+        status = "[bold green]✓ Enabled[/bold green]" if config["tag_stems"] else "[dim]Disabled[/dim]"
+        table.add_row("Tag Stems", status)
+    
+    # URLs and paths
+    if "suno_url" in config and config["suno_url"]:
+        table.add_row("Suno URL", f"[dim]{config['suno_url']}[/dim]")
+    if "suno_metadata_file" in config and config["suno_metadata_file"]:
+        table.add_row("Suno Metadata File", f"[dim]{config['suno_metadata_file']}[/dim]")
+    if "source_audio_dir" in config and config["source_audio_dir"]:
+        table.add_row("Source Audio Dir", f"[dim]{config['source_audio_dir']}[/dim]")
+    if "source_stems_dir" in config and config["source_stems_dir"]:
+        table.add_row("Source Stems Dir", f"[dim]{config['source_stems_dir']}[/dim]")
+    if "cover_art_path" in config and config["cover_art_path"]:
+        table.add_row("Cover Art Path", f"[dim]{config['cover_art_path']}[/dim]")
+    
+    # Additional fields (display as-is for other keys)
+    for key, value in config.items():
+        if key not in ["title", "artist", "genre", "bpm", "release_date", "release_dir",
+                      "tag_audio", "validate_cover", "validate_compliance", "organize_stems", "tag_stems",
+                      "suno_url", "suno_metadata_file", "source_audio_dir", "source_stems_dir", "cover_art_path",
+                      "debug", "_comment", "_comments"]:
+            if isinstance(value, bool):
+                status = "[bold green]✓ Enabled[/bold green]" if value else "[dim]Disabled[/dim]"
+                table.add_row(key.replace("_", " ").title(), status)
+            elif value is not None and value != "":
+                table.add_row(key.replace("_", " ").title(), str(value))
+    
+    console.print(table)
+
+
 def print_file_list(files: list, title: str = "Files"):
     """Print a formatted list of files."""
     if not files:
