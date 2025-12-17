@@ -22,16 +22,8 @@ DistroKid Release Packer/
 │   ├── HOW_IT_WORKS.md        # Architecture explanation
 │   ├── WORKFLOW.md            # Complete workflow
 │   ├── PROJECT_STRUCTURE.md   # This file
-│   ├── SETUP_COMPLETE.md      # Setup summary
 │   ├── CHANGELOG.md           # Version history
-│   ├── CONTRIBUTING.md        # Contribution guidelines
-│   ├── development/           # Development documentation
-│   │   ├── REMEDIATION_PLAN.md
-│   │   ├── REMEDIATION_TODOS.md
-│   │   └── REFACTORING_SUMMARY.md
-│   └── reports/               # Review reports
-│       ├── PRODUCTION_REVIEW.md
-│       └── PHASE_7_VALIDATION_REPORT.md
+│   └── CONTRIBUTING.md        # Contribution guidelines
 │
 ├── scripts/                    # Automation scripts
 │   ├── README.md              # Scripts documentation
@@ -106,20 +98,10 @@ DistroKid Release Packer/
 
 **Project Information:**
 - **`PROJECT_STRUCTURE.md`** - This file - project organization
-- **`SETUP_COMPLETE.md`** - Setup completion summary
 
 **Project Management:**
 - **`CHANGELOG.md`** - Version history and changes
 - **`CONTRIBUTING.md`** - Guidelines for contributors
-
-**Development Documentation (`docs/development/`):**
-- **`REMEDIATION_PLAN.md`** - Production readiness remediation plan
-- **`REMEDIATION_TODOS.md`** - Remediation task checklist
-- **`REFACTORING_SUMMARY.md`** - Code refactoring summary
-
-**Reports (`docs/reports/`):**
-- **`PRODUCTION_REVIEW.md`** - Pre-deployment quality review
-- **`PHASE_7_VALIDATION_REPORT.md`** - Final validation report
 
 ### Scripts (`scripts/`)
 

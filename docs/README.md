@@ -30,8 +30,6 @@ Complete documentation for the DistroKid Release Packer project, organized by to
 ### Project Information
 
 - **`PROJECT_STRUCTURE.md`** - Project organization and directory structure
-- **`SETUP_INSTRUCTIONS.md`** - Detailed setup instructions
-- **`SETUP_COMPLETE.md`** - Setup completion summary
 
 ### Configuration Guides
 
@@ -55,23 +53,8 @@ Complete documentation for the DistroKid Release Packer project, organized by to
 - **`CONTRIBUTING.md`** - Contribution guidelines and workflow
 - **`CHANGELOG.md`** - Version history and changes
 
-### Development Documentation
+### Features & Implementation
 
-Located in `development/` subdirectory:
-- **`REMEDIATION_PLAN.md`** - Production readiness remediation plan
-- **`REMEDIATION_TODOS.md`** - Remediation task checklist
-- **`REFACTORING_SUMMARY.md`** - Code refactoring summary
-
-### Reports & Reviews
-
-Located in `reports/` subdirectory:
-- **`PRODUCTION_REVIEW.md`** - Pre-deployment quality review
-- **`PRODUCTION_REVIEW_FINAL.md`** - Final production readiness review
-- **`PHASE_7_VALIDATION_REPORT.md`** - Final validation report
-
-### Improvements & Features
-
-- **`IMPROVEMENTS_100.md`** - Improvement suggestions and roadmap
 - **`FEATURES_IMPLEMENTED.md`** - Documentation of implemented features (logging, validation, batch processing, etc.)
 
 ---
@@ -88,8 +71,7 @@ Located in `reports/` subdirectory:
 **For developers:**
 1. `PROJECT_STRUCTURE.md` - Code organization
 2. `CONTRIBUTING.md` - Contribution guidelines
-3. `development/REMEDIATION_PLAN.md` - Architecture decisions
-4. Main `README.md` - Project overview
+3. Main `README.md` - Project overview
 
 **For troubleshooting:**
 1. `QUICK_REFERENCE.md` - Common tasks
@@ -138,7 +120,6 @@ See `CONTRIBUTING.md` for detailed contribution guidelines.
 - Limited API reference documentation for programmatic usage
 
 **Recent updates:**
-- Production readiness review completed (see `reports/PRODUCTION_REVIEW_FINAL.md`)
 - New features documented in `FEATURES_IMPLEMENTED.md`
 - Scripts documentation updated in `scripts/README.md`
 
