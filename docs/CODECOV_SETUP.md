@@ -68,12 +68,23 @@ If you prefer to use a token instead:
 3. **Update Workflow:**
    - Add `token: ${{ secrets.CODECOV_TOKEN }}` to the Codecov action
 
+## Test Analytics (Optional Feature)
+
+The workflow also uploads test results (JUnit XML) for Test Analytics:
+- Tracks test execution times
+- Identifies flaky tests
+- Shows failure rates
+- View at: https://codecov.io/gh/elirancv/distrokid-release-packer/tests
+
+**Note:** Test Analytics is separate from code coverage. The coverage badge shows code coverage percentage, while Test Analytics shows test execution metrics.
+
 ## Verify Setup
 
 After connecting:
-- Check GitHub Actions logs for successful Codecov upload
+- Check GitHub Actions logs for successful Codecov upload (both coverage and test results)
 - Visit https://codecov.io/gh/elirancv/distrokid-release-packer
 - The badge should show coverage percentage instead of "unknown"
+- Test Analytics available in the "Tests" tab on Codecov dashboard
 
 ## Troubleshooting
 
