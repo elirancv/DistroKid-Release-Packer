@@ -66,12 +66,13 @@ yarn.lock
 .cursorrules
 .cursorignore
 
-# Project-specific
-# Ignore all releases except example
-Releases/*
-!Releases/.gitkeep
-!Releases/example/
-exports/
+# Project-specific - Runtime directories
+runtime/
+!runtime/.gitkeep
+!runtime/input/.gitkeep
+!runtime/output/.gitkeep
+!runtime/output/example/
+!runtime/logs/.gitkeep
 *.wav
 *.mp3
 *.flac
@@ -412,8 +413,11 @@ $RECYCLE.BIN/
 .nfs*
 
 # Project specific - keep structure
-!Releases/.gitkeep
-!exports/.gitkeep
+!runtime/.gitkeep
+!runtime/input/.gitkeep
+!runtime/output/.gitkeep
+!runtime/output/example/
+!runtime/logs/.gitkeep
 !Screenshots/.gitkeep
 !Metadata/.gitkeep
 

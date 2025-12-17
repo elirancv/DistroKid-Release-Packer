@@ -1,0 +1,34 @@
+{
+  "artist": "Playdexmusic",
+  "title": "Thank You Lord (Nicolas Jaar RMX)",
+  "release_dir": "./runtime/output/ThankYouLordNicolasJaarRMX",
+  "suno_url": "https://suno.com/song/abc123xyz?v=5",
+  "source_audio_dir": "./runtime/input",
+  "source_stems_dir": "./runtime/input/stems",
+  "genre": "Deep House",
+  "bpm": 122,
+  "key": "C minor",
+  "explicit": false,
+  "language": "English",
+  "mood": "Energetic",
+  "target_regions": ["US", "UK", "EU"],
+  "isrc": "",
+  "upc": "",
+  "id3_metadata": {
+    "album": "Summer Vibes EP",
+    "year": "2025",
+    "tracknumber": "1/5",
+    "composer": "Playdexmusic + Suno AI",
+    "publisher": "Independent"
+  },
+  "rename_audio": true,
+  "organize_stems": true,
+  "tag_stems": false,
+  "tag_audio": true,
+  "validate_cover": true,
+  "validate_compliance": true,
+  "strict_mode": false,
+  "overwrite_existing": false,
+  "auto_fix_clipping": true
+}
+

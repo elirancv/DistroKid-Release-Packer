@@ -1,0 +1,164 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DistroKid Release Packer - Release Configuration Schema",
+  "description": "Schema for release.json configuration file",
+  "type": "object",
+  "required": ["title", "source_audio_dir", "release_dir"],
+  "properties": {
+    "artist": {
+      "type": "string",
+      "description": "Artist name (can be set in artist-defaults.json)"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Track title"
+    },
+    "release_dir": {
+      "type": "string",
+      "description": "Output directory for release files"
+    },
+    "suno_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Suno track URL for version extraction"
+    },
+    "suno_metadata_file": {
+      "type": "string",
+      "description": "Path to Suno metadata JSON file"
+    },
+    "source_audio_dir": {
+      "type": "string",
+      "description": "Source directory for audio files"
+    },
+    "source_stems_dir": {
+      "type": "string",
+      "description": "Source directory for stem files"
+    },
+    "genre": {
+      "type": "string",
+      "description": "Music genre"
+    },
+    "bpm": {
+      "type": ["integer", "number"],
+      "minimum": 1,
+      "maximum": 300,
+      "description": "Beats per minute"
+    },
+    "key": {
+      "type": "string",
+      "description": "Musical key"
+    },
+    "explicit": {
+      "type": "boolean",
+      "description": "Whether content is explicit"
+    },
+    "language": {
+      "type": "string",
+      "description": "Language of lyrics"
+    },
+    "mood": {
+      "type": "string",
+      "description": "Mood descriptor"
+    },
+    "target_regions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Target regions for distribution"
+    },
+    "isrc": {
+      "type": "string",
+      "description": "International Standard Recording Code"
+    },
+    "upc": {
+      "type": "string",
+      "description": "Universal Product Code"
+    },
+    "id3_metadata": {
+      "type": "object",
+      "properties": {
+        "album": {
+          "type": "string"
+        },
+        "year": {
+          "type": "string",
+          "pattern": "^\\d{4}$"
+        },
+        "tracknumber": {
+          "type": "string",
+          "pattern": "^(\\d+|\\d+/\\d+)$",
+          "description": "Track number (e.g., '1' or '1/5')"
+        },
+        "composer": {
+          "type": "string"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "album_artist": {
+          "type": "string"
+        },
+        "copyright": {
+          "type": "string"
+        },
+        "isrc": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "bpm": {
+          "type": ["integer", "string"]
+        },
+        "language": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "rename_audio": {
+      "type": "boolean",
+      "default": true
+    },
+    "organize_stems": {
+      "type": "boolean",
+      "default": false
+    },
+    "tag_stems": {
+      "type": "boolean",
+      "default": false
+    },
+    "tag_audio": {
+      "type": "boolean",
+      "default": true
+    },
+    "validate_cover": {
+      "type": "boolean",
+      "default": true
+    },
+    "validate_compliance": {
+      "type": "boolean",
+      "default": true
+    },
+    "strict_mode": {
+      "type": "boolean",
+      "default": false
+    },
+    "overwrite_existing": {
+      "type": "boolean",
+      "default": false
+    },
+    "auto_fix_clipping": {
+      "type": "boolean",
+      "default": false
+    },
+    "debug": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "additionalProperties": false
+}
+

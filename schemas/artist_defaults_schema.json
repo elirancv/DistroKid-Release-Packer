@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DistroKid Release Packer - Artist Defaults Schema",
+  "description": "Schema for artist-defaults.json configuration file",
+  "type": "object",
+  "properties": {
+    "default_artist": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Default artist name"
+    },
+    "default_publisher": {
+      "type": "string",
+      "description": "Default publisher name"
+    },
+    "composer_template": {
+      "type": "string",
+      "description": "Composer template (e.g., '{artist} + Suno AI')"
+    },
+    "default_track_number": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Default track number for singles"
+    },
+    "default_total_tracks": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Default total tracks for singles"
+    }
+  },
+  "additionalProperties": false
+}
+
